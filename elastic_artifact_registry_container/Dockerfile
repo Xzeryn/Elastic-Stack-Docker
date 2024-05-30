@@ -1,6 +1,8 @@
 # Use the nginx official image
 FROM nginx
 
+ENV ELASTIC_VERSION=8.13.4
+
 # Create Artifact storage directory
 RUN mkdir /opt/elastic-packages
 ENV DOWNLOAD_BASE_DIR=/opt/elastic-packages

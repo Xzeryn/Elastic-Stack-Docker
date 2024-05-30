@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o nounset -o errexit -o pipefail
 
-STACK_VERSION=8.13.4
+STACK_VERSION=${ELASTIC_VERSION}
 ARTIFACT_DOWNLOADS_BASE_URL=https://artifacts.elastic.co/downloads
 
 DOWNLOAD_BASE_DIR=${DOWNLOAD_BASE_DIR:?"Make sure to set DOWNLOAD_BASE_DIR when running this script"}
