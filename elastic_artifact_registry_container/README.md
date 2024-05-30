@@ -1,4 +1,8 @@
-To create Elastic Artifact Registry container:
+*This container is automatically created with the docker compose file.*
+
+
+
+To manually create Elastic Artifact Registry container:
 
 Edit the Dockerfile and set the `ELASTIC_VERSION` to the version you desire and save the file.
 

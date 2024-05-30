@@ -1,4 +1,4 @@
-version: "3.8"
+
 volumes:
   certs:
     driver: local
@@ -35,6 +35,11 @@ services:
 
   ear:
     image: elastic-artifact-registry:${STACK_VERSION}
+    build:
+      context: elastic_artifact_registry_container
+      dockerfile: Dockerfile
+      args:
+        - ELASTIC_VERSION=${STACK_VERSION}
     container_name: ear
     restart: always
     ports:

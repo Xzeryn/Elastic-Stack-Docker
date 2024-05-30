@@ -1,7 +1,8 @@
 # Use the nginx official image
 FROM nginx
 
-ENV ELASTIC_VERSION=8.13.4
+ARG ELASTIC_VERSION
+ENV ELASTIC_VERSION=${ELASTIC_VERSION}
 
 # Create Artifact storage directory
 RUN mkdir /opt/elastic-packages
