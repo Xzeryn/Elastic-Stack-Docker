@@ -5,6 +5,14 @@ elastic:
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
 server.host: "0.0.0.0"
 telemetry.enabled: "true"
+xpack.fleet.outputs:
+  - id: internal-elasticsearch-output
+    name: default
+    type: elasticsearch
+    hosts: ["https://es01:9200"]
+    is_default: true
+    is_default_monitoring: true
+    ssl.certificate_authorities: ["/certs/ca/ca.crt"]
 xpack.fleet.packages:
   - name: fleet_server
     version: latest

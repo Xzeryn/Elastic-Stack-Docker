@@ -116,6 +116,7 @@ services:
       setup:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    restart: always
     labels:
       co.elastic.logs/module: elasticsearch
     volumes:
@@ -160,6 +161,7 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    #restart: always
     labels:
       co.elastic.logs/module: kibana
     volumes:
@@ -201,6 +203,7 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+    restart: always
     volumes:
       - certs:/certs
       - fleetserverdata:/usr/share/elastic-agent
@@ -318,17 +321,17 @@ services:
   #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
   #     - ELASTIC_HOSTS=https://es01:9200
 
-  # webapp:
-  #   build:
-  #     context: app
-  #   volumes:
-  #     - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
-  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  #     - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
-  #     - "/proc:/hostfs/proc:ro"
-  #     - "/:/hostfs:ro"
-  #   ports:
-  #     - 8000:8000
+  webapp:
+    build:
+      context: app
+    volumes:
+      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
+      - "/proc:/hostfs/proc:ro"
+      - "/:/hostfs:ro"
+    ports:
+      - 8000:8000
 
     
     
