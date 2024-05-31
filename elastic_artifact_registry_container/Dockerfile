@@ -5,8 +5,8 @@ ARG ELASTIC_VERSION
 ENV ELASTIC_VERSION=${ELASTIC_VERSION}
 
 # Create Artifact storage directory
-RUN mkdir /opt/elastic-packages
-ENV DOWNLOAD_BASE_DIR=/opt/elastic-packages
+RUN mkdir -p /opt/elastic-packages/downloads
+ENV DOWNLOAD_BASE_DIR=/opt/elastic-packages/downloads
 
 # Copy Artifact Registry creation script
 COPY get-artifacts.sh /root/get-artifacts.sh

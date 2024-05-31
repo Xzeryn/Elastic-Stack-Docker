@@ -25,6 +25,8 @@ xpack.fleet.packages:
     version: latest
   - name: apm
     version: latest
+  - name: docker
+    version: latest
 xpack.fleet.agentPolicies:
   - name: Fleet-Server-Policy
     id: fleet-server-policy
@@ -42,6 +44,9 @@ xpack.fleet.agentPolicies:
       - name: elastic_agent-1
         package:
           name: elastic_agent
+      - name: docker-1
+        package:
+          name: docker
       - name: apm-1
         package:
           name: apm
@@ -53,3 +58,15 @@ xpack.fleet.agentPolicies:
             value: 0.0.0.0:8200
           - name: secret_token
             value: ${ELASTIC_APM_SECRET_TOKEN}
+  # - name: Docker-Container-Policy
+  #   id: docker-container-policy
+  #   namespace: default
+  #   monitoring_enabled: 
+  #     - logs
+  #     - metrics
+  #   package_policies:
+  #     - name: system-docker
+  #       package:
+  #         name: system
+
+      
