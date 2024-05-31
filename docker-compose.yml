@@ -281,7 +281,7 @@ services:
     command:
       -strict.perms=false
 
-  # Filebeat is configured to ingest data from the filebeat/ingest_data folder, drop .log files in this folder to ingest
+  # Filebeat is configured to ingest data from the filebeat_ingest_data folder, drop .log files in this folder to ingest
   # Filebeat is also configured to pull logs for all docker containers (visible in the Logs Stream viewer)
   filebeat01:
     depends_on:
@@ -306,7 +306,7 @@ services:
     command:
       -strict.perms=false
 
-  # Logstash is configured to ingest data from the logstash/ingest_data folder
+  # Logstash is configured to ingest data from the logstash_ingest_data folder
   logstash01:
     depends_on:
       es01:
