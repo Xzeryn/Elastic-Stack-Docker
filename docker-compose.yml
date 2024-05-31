@@ -185,6 +185,8 @@ services:
       - SERVER_SSL_KEY=config/certs/kibana/kibana.key
       - SERVER_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - XPACK_FLEET_REGISTRYURL=http://epr:${EPR_PORT}
+      - FLEET_PORT=${FLEET_PORT}
     mem_limit: ${KB_MEM_LIMIT}
     healthcheck:
       test:
@@ -236,7 +238,6 @@ services:
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
       - KIBANA_HOST=https://kibana:5601
-      - XPACK_FLEET_REGISTRYURL:http://epr:${EPR_PORT}
     healthcheck:
       test:
         [ 
