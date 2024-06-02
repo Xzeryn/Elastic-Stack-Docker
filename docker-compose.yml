@@ -207,6 +207,7 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+    entrypoint: ["agent-startup.sh"]
     restart: always
     volumes:
       - certs:/certs
@@ -216,6 +217,7 @@ services:
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/proc:/hostfs/proc:ro"
       - "/:/hostfs:ro"
+      - .\agent-startup.sh:/usr/share/elastic-agent/agent-startup.sh
     ports:
       - ${FLEET_PORT}:8220
       - ${APMSERVER_PORT}:8200
