@@ -58,15 +58,15 @@ xpack.fleet.agentPolicies:
             value: 0.0.0.0:8200
           - name: secret_token
             value: ${ELASTIC_APM_SECRET_TOKEN}
-  # - name: Docker-Container-Policy
-  #   id: docker-container-policy
-  #   namespace: default
-  #   monitoring_enabled: 
-  #     - logs
-  #     - metrics
-  #   package_policies:
-  #     - name: system-docker
-  #       package:
-  #         name: system
+  - name: Docker-Container-Policy
+    id: docker-container-policy
+    namespace: default
+    monitoring_enabled: 
+      - logs
+      - metrics
+    package_policies:
+      - name: system-docker
+        package:
+          name: system
 
       
