@@ -4,6 +4,10 @@ volumes:
     driver: local
   esdata01:
     driver: local
+  esdata02:
+    driver: local
+  esdata03:
+    driver: local
   kibanadata:
     driver: local
   metricbeatdata01:
@@ -80,6 +84,18 @@ services:
           "    ip:\n"\
           "      - 127.0.0.1\n"\
           "      - ${DOCKER_HOST_IP}\n"\
+          "  - name: es02\n"\
+          "    dns:\n"\
+          "      - es02\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: es03\n"\
+          "    dns:\n"\
+          "      - es03\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
           "  - name: kibana\n"\
           "    dns:\n"\
           "      - kibana\n"\
@@ -130,7 +146,8 @@ services:
     environment:
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
-      - discovery.type=single-node
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es02,es03
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - bootstrap.memory_lock=true
       - xpack.security.enabled=true
@@ -141,6 +158,94 @@ services:
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.key=certs/es01/es01.key
       - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${ES_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+  
+  es02:
+    depends_on:
+      es01:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    restart: always
+    labels:
+      co.elastic.logs/module: elasticsearch
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - esdata02:/usr/share/elasticsearch/data
+    environment:
+      - node.name=es02
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es01,es03
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/es02/es02.key
+      - xpack.security.http.ssl.certificate=certs/es02/es02.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/es02/es02.key
+      - xpack.security.transport.ssl.certificate=certs/es02/es02.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${LICENSE}
+    mem_limit: ${ES_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  es03:
+    depends_on:
+      es02:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    restart: always
+    labels:
+      co.elastic.logs/module: elasticsearch
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - esdata03:/usr/share/elasticsearch/data
+    environment:
+      - node.name=es03
+      - cluster.name=${CLUSTER_NAME}
+      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=es01,es02
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/es03/es03.key
+      - xpack.security.http.ssl.certificate=certs/es03/es03.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/es03/es03.key
+      - xpack.security.transport.ssl.certificate=certs/es03/es03.crt
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
@@ -190,7 +295,7 @@ services:
       - SERVER_SSL_KEY=config/certs/kibana/kibana.key
       - SERVER_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
-      - XPACK_FLEET_REGISTRYURL=http://epr:${EPR_PORT}
+      - XPACK_FLEET_REGISTRYURL=http://epr:8080
       - FLEET_PORT=${FLEET_PORT}
       - ES_PORT=${ES_PORT}
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
@@ -213,7 +318,7 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
-    entrypoint: ["agent-startup.sh"]
+    entrypoint: ["fleet-startup.sh"]
     restart: always
     volumes:
       - certs:/certs
@@ -223,7 +328,7 @@ services:
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/proc:/hostfs/proc:ro"
       - "/:/hostfs:ro"
-      - .\agent-startup.sh:/usr/share/elastic-agent/agent-startup.sh
+      - ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh
     ports:
       - ${FLEET_PORT}:8220
       - ${APMSERVER_PORT}:8200
@@ -248,6 +353,8 @@ services:
       - KIBANA_FLEET_USERNAME=elastic
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
       - KIBANA_HOST=https://kibana:5601
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+      - EAR_PORT=${EAR_PORT}
     healthcheck:
       test:
         [ 
@@ -266,6 +373,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
+    restart: always
     user: root
     volumes:
       - certs:/usr/share/metricbeat/certs
@@ -298,6 +406,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+    restart: always
     user: root
     volumes:
       - certs:/usr/share/filebeat/certs
@@ -324,6 +433,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    restart: always
     labels:
       co.elastic.logs/module: logstash
     user: root
@@ -343,6 +453,7 @@ services:
   webapp:
     build:
       context: app
+    restart: always
     volumes:
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -358,6 +469,7 @@ services:
         condition: service_healthy
     hostname: container-agent
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+    restart: always
     volumes:
       - certs:/certs
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"

@@ -7,8 +7,6 @@ elastic:
 server.host: "0.0.0.0"
 telemetry.enabled: "true"
 
-# xpack.fleet.agents.fleet_server.hosts: ["https://${DOCKER_HOST_IP}:${FLEET_PORT}"]
-# xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server:8220"]
 xpack.fleet.fleetServerHosts:
   - id: external_fleet_server
     name: External Fleet Server URL

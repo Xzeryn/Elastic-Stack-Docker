@@ -40,3 +40,6 @@ Fleet-Managed: https://www.elastic.co/guide/en/fleet/8.8/install-fleet-managed-e
 
 Queue Full Error:
 https://www.elastic.co/guide/en/apm/server/current/common-problems.html#queue-full
+
+### Add more Elasticsearch nodes or configure for production
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-compose-file
