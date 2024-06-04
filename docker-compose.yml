@@ -386,7 +386,7 @@ services:
     environment:
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - ELASTIC_HOSTS=https://es01:9200
+      - ELASTIC_HOSTS=https://es01:9200,https://es02:9200,https://es03:9200
       - KIBANA_HOSTS=https://kibana:5601
       - LOGSTASH_HOSTS=http://logstash01:9600
       - CA_CERT=certs/ca/ca.crt
