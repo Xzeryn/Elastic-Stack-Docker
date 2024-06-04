@@ -79,18 +79,21 @@ services:
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
+          "      - ${DOCKER_HOST_IP}\n"\
           "  - name: kibana\n"\
           "    dns:\n"\
           "      - kibana\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
+          "      - ${DOCKER_HOST_IP}\n"\
           "  - name: fleet-server\n"\
           "    dns:\n"\
           "      - fleet-server\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
+          "      - ${DOCKER_HOST_IP}\n"\
           > config/certs/instances.yml;
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;
@@ -189,6 +192,9 @@ services:
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
       - XPACK_FLEET_REGISTRYURL=http://epr:${EPR_PORT}
       - FLEET_PORT=${FLEET_PORT}
+      - ES_PORT=${ES_PORT}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+      - APMSERVER_PORT=${APMSERVER_PORT}
     mem_limit: ${KB_MEM_LIMIT}
     healthcheck:
       test:
@@ -288,6 +294,8 @@ services:
   filebeat01:
     depends_on:
       es01:
+        condition: service_healthy
+      kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
     user: root

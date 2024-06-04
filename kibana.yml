@@ -1,21 +1,39 @@
 elastic:
   apm:
     active: true
-    serverUrl: "http://fleet-server:8200"
+    serverUrl: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
+    # serverUrl: "http://fleet-server:8200"
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
 server.host: "0.0.0.0"
 telemetry.enabled: "true"
 
-xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server:${FLEET_PORT}"]
+# xpack.fleet.agents.fleet_server.hosts: ["https://${DOCKER_HOST_IP}:${FLEET_PORT}"]
+# xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server:8220"]
+xpack.fleet.fleetServerHosts:
+  - id: external_fleet_server
+    name: External Fleet Server URL
+    host_urls: ["https://${DOCKER_HOST_IP}:${FLEET_PORT}"]
+    is_default: true
+  - id: internal_fleet_server
+    name: Internal Docker Fleet Server URL
+    host_urls: ["https://fleet-server:8220"]
+    # is_internal: true
 
 xpack.fleet.outputs:
-  - id: internal-elasticsearch-output
-    name: default
+  - id: external_elasticsearch_output
+    name: External Elasticsearch Output
     type: elasticsearch
-    hosts: ["https://es01:9200"]
+    hosts: ["https://${DOCKER_HOST_IP}:${ES_PORT}"]
     is_default: true
     is_default_monitoring: true
     ssl.certificate_authorities: ["/certs/ca/ca.crt"]
+  # Uncomment to enable multiple outputs - requires Platinum or above license
+  # - id: interal_docker_elasticsearch_output
+  #   name: Interal Docker Elasticsearch Output
+  #   type: elasticsearch
+  #   hosts: ["https://es01:9200"]
+  #   ssl.certificate_authorities: ["/certs/ca/ca.crt"]
+
 xpack.fleet.packages:
   - name: fleet_server
     version: latest
@@ -27,10 +45,15 @@ xpack.fleet.packages:
     version: latest
   - name: docker
     version: latest
+
 xpack.fleet.agentPolicies:
   - name: Fleet-Server-Policy
     id: fleet-server-policy
     namespace: default
+    fleet_server_host_id: internal_fleet_server
+    # Uncomment to enable multiple outputs - requires Platinum or above license
+    # data_output_id: interal_docker_elasticsearch_output
+    # monitoring_output_id: interal_docker_elasticsearch_output
     monitoring_enabled: 
       - logs
       - metrics
@@ -61,6 +84,10 @@ xpack.fleet.agentPolicies:
   - name: Docker-Container-Policy
     id: docker-container-policy
     namespace: default
+    fleet_server_host_id: internal_fleet_server
+    # Uncomment to enable multiple outputs - requires Platinum or above license
+    # data_output_id: interal_docker_elasticsearch_output
+    # monitoring_output_id: interal_docker_elasticsearch_output
     monitoring_enabled: 
       - logs
       - metrics

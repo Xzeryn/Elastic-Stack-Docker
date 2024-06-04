@@ -1,5 +1,7 @@
 This Project is based on the following by elkninja and adds the Elastic Package Registry and Elastic Artifact Registry containers:
 
+Edit the .env file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work.
+
 # Getting started with the Elastic Stack and Docker Compose: Part 2
 ## Elastic Agent, Fleet, and Elastic APM
 
