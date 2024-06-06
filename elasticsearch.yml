@@ -1,0 +1,4 @@
+network.host: 0.0.0.0
+telemetry.tracing.enabled: true
+# telemetry.agent.server_url: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
+telemetry.agent.server_url: "http://fleet-server:8200"

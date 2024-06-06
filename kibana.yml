@@ -1,9 +1,10 @@
 elastic:
   apm:
     active: true
-    serverUrl: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
-    # serverUrl: "http://fleet-server:8200"
+    # serverUrl: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
+    serverUrl: "http://fleet-server:8200"
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
+    environment: Elastic_Stack
 server.host: "0.0.0.0"
 telemetry.enabled: "true"
 

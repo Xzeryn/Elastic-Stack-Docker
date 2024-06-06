@@ -2,6 +2,8 @@
 volumes:
   certs:
     driver: local
+  keystore:
+    driver: local
   esdata01:
     driver: local
   esdata02:
@@ -58,6 +60,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
+      - ./es-keystore:/usr/share/elasticsearch/config/keystore
     user: "0"
     command: >
       bash -c '
@@ -141,6 +144,8 @@ services:
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - esdata01:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./es-docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro  
     ports:
       - ${ES_PORT}:9200
     environment:
@@ -161,6 +166,10 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+      - APMSERVER_PORT=${APMSERVER_PORT}
     mem_limit: ${ES_MEM_LIMIT}
     ulimits:
       memlock:
@@ -187,6 +196,8 @@ services:
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - esdata02:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./es-docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
@@ -205,6 +216,10 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+      - APMSERVER_PORT=${APMSERVER_PORT}
     mem_limit: ${ES_MEM_LIMIT}
     ulimits:
       memlock:
@@ -231,6 +246,8 @@ services:
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - esdata03:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./es-docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
     environment:
       - node.name=es03
       - cluster.name=${CLUSTER_NAME}
@@ -249,6 +266,10 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+      - APMSERVER_PORT=${APMSERVER_PORT}
     mem_limit: ${ES_MEM_LIMIT}
     ulimits:
       memlock:
@@ -295,6 +316,7 @@ services:
       - SERVER_SSL_KEY=config/certs/kibana/kibana.key
       - SERVER_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
       - XPACK_FLEET_REGISTRYURL=http://epr:8080
       - FLEET_PORT=${FLEET_PORT}
       - ES_PORT=${ES_PORT}
