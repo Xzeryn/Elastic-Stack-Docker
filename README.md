@@ -12,20 +12,20 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM
 
 ## Stack Components
 
-- Elasticsearch (es01, es02, es03)
-- Kibana (kibana)
-- Fleet Server (fleet-server): Provides fleet and apm server functions
+- Elasticsearch (`es01`, `es02`, `es03`)
+- Kibana (`kibana`)
+- Fleet Server (`fleet-server`): Provides fleet and apm server functions
 ##
-- Elastic Package Registry (epr): Provides local copy of required elastic packages
-- Elastic Artifact Registry (ear): Provides local copy of elastic binaries for agent install
+- Elastic Package Registry (`epr`): Provides local copy of required elastic packages
+- Elastic Artifact Registry (`ear`): Provides local copy of elastic binaries for agent install
 ##
-- Metricbeat (metricbeat01): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
+- Metricbeat (`metricbeat01`): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
 ##
-- Filebeat (filebeat01): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
-- Logstash (logstash01): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
+- Filebeat (`filebeat01`): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
+- Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
 ##
-- Web App (webapp): Demo web application that allows triggering of errors visible in the APM section of Kibana
-- Elastic Agent Container (container-agent): Demo elastic agent container to test integrations
+- Web App (`webapp`): Demo web application that allows triggering of errors visible in the APM section of Kibana
+- Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations
 
 ---
 
