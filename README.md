@@ -2,7 +2,9 @@
 
 This project creates a full Elastic stack in docker using `docker compose`.
 
-It is based heavily on the work done by elkninja and adds local copies of the Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) containers for air-gapped environments.  **WARNING** The Elastic Package Registry image is ~15G and the Elastic Artifact Registry is ~4G in size.  
+It is based heavily on the work done by elkninja and adds local copies of the Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) containers for air-gapped environments.  
+
+**WARNING:** The Elastic Package Registry image is ~15G and the Elastic Artifact Registry is ~4G in size.  
 
 The EPR and EAR are integrated into the project, but not required for the Elastic stack to function.  To disable the local EPR/EAR and use the official registries on the elastic.co site, you will need to comment out sections of various files.  (Instructions below) 
 
