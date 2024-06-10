@@ -27,6 +27,7 @@ networks:
     external: false
 
 services:
+  ##### Comment out if EPR is not desired #####
   epr:
     image: docker.elastic.co/package-registry/distribution:${STACK_VERSION}
     container_name: epr
@@ -38,7 +39,9 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
+  ##### End EPR Comment #####
 
+  ##### Comment out if EAR is not desired #####
   ear:
     image: elastic-artifact-registry:${STACK_VERSION}
     build:
@@ -55,7 +58,8 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-      
+  ##### End EAR Comment #####   
+
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
@@ -289,8 +293,10 @@ services:
     depends_on:
       es01:
         condition: service_healthy
+      ##### Comment out if EPR is not desired #####
       epr:
         condition: service_healthy
+      ##### End EPR Comment #####
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     restart: always
     labels:
@@ -317,7 +323,9 @@ services:
       - SERVER_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
       - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
+      ##### Comment out if EPR is not desired #####
       - XPACK_FLEET_REGISTRYURL=http://epr:8080
+      ##### End EPR Comment #####
       - FLEET_PORT=${FLEET_PORT}
       - ES_PORT=${ES_PORT}
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
@@ -350,7 +358,9 @@ services:
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/proc:/hostfs/proc:ro"
       - "/:/hostfs:ro"
+      ##### Comment out if EAR is not desired #####
       - ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh
+      ##### End EAR Comment #####
     ports:
       - ${FLEET_PORT}:8220
       - ${APMSERVER_PORT}:8200
@@ -387,7 +397,7 @@ services:
       timeout: 10s
       retries: 120
 
-  # Metricbeat is used for stack monitoring
+  # Metricbeat is used for stack monitoring (Optional)
   metricbeat01:
     depends_on:
       es01:
@@ -420,7 +430,7 @@ services:
       -strict.perms=false
 
   # Filebeat is configured to ingest data from the filebeat_ingest_data folder, drop .log files in this folder to ingest
-  # Filebeat is also configured to pull logs for all docker containers (visible in the Logs Stream viewer)
+  # Filebeat is also configured to pull logs for all docker containers (visible in the Logs Stream viewer) (Optional)
   filebeat01:
     depends_on:
       es01:
@@ -447,7 +457,7 @@ services:
     command:
       -strict.perms=false
 
-  # Logstash is configured to ingest data from the logstash_ingest_data folder
+  # Logstash is configured to ingest data from the logstash_ingest_data folder (Optional)
   logstash01:
     depends_on:
       es01:
@@ -470,7 +480,7 @@ services:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://es01:9200
 
-  # The webapp is an example insturmentation of the elastic APM agent.
+  # The webapp is an example insturmentation of the elastic APM agent. (Optional)
   # Access the webapp through http://localhost:8000
   webapp:
     build:
@@ -485,6 +495,7 @@ services:
     ports:
       - 8000:8000
 
+  # The container-agent is an example of insturmenting an agent within a docker container
   container-agent:
     depends_on:
       fleet-server:
