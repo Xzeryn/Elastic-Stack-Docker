@@ -60,13 +60,6 @@ To bring down the stack and remove the data run `docker compose down -v`
 
 ---
 
-## References
-
-- [Getting Started with the Elastic Stack and Docker Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose) or visit it's [GitHub repo](https://github.com/elkninja/elastic-stack-docker-part-one)
-- [Getting Started with the Elastic Stack and Docker Compose: Part 2](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose-part-2) or visit it's [GitHub repo](https://github.com/elkninja/elastic-stack-docker-part-two)
-
----
-
 ## Running without EPR and EAR
 
 ### Removing references to the Elastic Package Registry (EPR)
@@ -87,6 +80,13 @@ There is 1 section for the EAR in the `docker-compose.yml`:
 
 - Under `services`, comment out the entire `ear` section.
 - Under `services` -> `fleet-server` -> `volumes`, comment out the `- ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh` line.
+
+---
+
+## References
+
+- [Getting Started with the Elastic Stack and Docker Compose](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose) or visit it's [GitHub repo](https://github.com/elkninja/elastic-stack-docker-part-one)
+- [Getting Started with the Elastic Stack and Docker Compose: Part 2](https://www.elastic.co/blog/getting-started-with-the-elastic-stack-and-docker-compose-part-2) or visit it's [GitHub repo](https://github.com/elkninja/elastic-stack-docker-part-two)
 
 ---
 
