@@ -109,4 +109,5 @@ There is 1 section for the EAR in the `docker-compose.yml`:
 - Queue Full Error: https://www.elastic.co/guide/en/apm/server/current/common-problems.html#queue-full
 
 ### Add more Elasticsearch nodes or configure for production
+
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-compose-file
