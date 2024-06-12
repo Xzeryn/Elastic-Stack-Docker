@@ -361,6 +361,8 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
+    profiles:
+      - monitoring
     restart: always
     user: root
     volumes:
@@ -394,6 +396,8 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+    profiles:
+      - filebeat
     restart: always
     user: root
     volumes:
@@ -421,6 +425,8 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+    profiles:
+      - logstash
     restart: always
     labels:
       co.elastic.logs/module: logstash
@@ -441,6 +447,8 @@ services:
   webapp:
     build:
       context: app
+    profiles:
+      - apm
     restart: always
     volumes:
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
@@ -458,6 +466,8 @@ services:
         condition: service_healthy
     hostname: container-agent
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+    profiles:
+      - agent
     restart: always
     volumes:
       - certs:/certs

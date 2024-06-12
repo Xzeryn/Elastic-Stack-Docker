@@ -8,9 +8,9 @@ It is based heavily on the work done by elkninja and adds local copies of the El
 
 The EPR and EAR are integrated into the project, but not required for the Elastic stack to function.  
 
-The project creates certs and stands up a 3-node Elasticsearch cluster, with Kibana and Fleet-Server already preconfigured.  It also stands up Logstash, Metricbeat, Filebeat, and a webapp APM example container.
+The project creates certs and stands up a 3-node Elasticsearch cluster, with Kibana and Fleet-Server already preconfigured.  It also stands up Logstash, Metricbeat, Filebeat, and a webapp APM example container using docker profiles.
 
-Elasticsearch and Kibana are preconfigured and insturmented with APM
+Elasticsearch and Kibana are preconfigured and insturmented with APM.
 
 ---
 
@@ -74,7 +74,42 @@ The `air-gapped.yml` configures the stack to utilize local Elastic Package Regis
 
 ## Profiles
 
-PROFILE INFO HERE
+Profiles are enabled to configure different services for demo/example purposes.
+
+To use a profile add `--profile <name>` to the docker compose command.  Each profile enabled but have its own `--profile <name>`, you cannot use a list of comma separated profile names.
+
+Usage Examples:
+- `docker compose --profile monitoring --profile apm up -d`
+- `docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring --profile apm up -d`
+
+### Available Profiles
+
+**Monitoring** 
+- Configures metricbeat in the cluster and performs monitoring of the Elastic stack
+- Use `--profile monitoring` in your docker compose startup command to enable
+
+**Filebeat**
+- Configures filebeat in the cluster to ingest data from the filebeat_ingest_data folder
+- Drop .log files in this folder to ingest 
+- Filebeat is also configured to pull logs for all docker containers (visible in the Kibana Logs Stream viewer)
+- Use `--profile filebeat` in your docker compose startup command to enable
+
+**Logstash**
+- Configures logstash in the cluster to ingest data from the logstash_ingest_data folder
+- Edit the `logstash.conf` file to try out different ingest pipelines
+- Use `--profile logstash` in your docker compose startup command to enable
+
+**APM** 
+- Configures sample web application in the cluster that is insturmented with the elastic APM agent
+- The webapp allows for the generation of error codes and messages that can be seen in the Kibana APM section
+- Access the webapp through `http://localhost:8000`
+- Use `--profile apm` in your docker compose startup command to enable
+
+**Agent** 
+- Configures an Elastic Agent container in the cluster registered in Fleet with only the system integration enabled
+- The agent container allows for experimentation with agent integrations in the Kibana Fleet section
+- Use `--profile agent` in your docker compose startup command to enable
+
 
 ---
 
