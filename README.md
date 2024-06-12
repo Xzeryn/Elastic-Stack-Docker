@@ -47,12 +47,12 @@ Initially, internet access is required to build and pull the images.  The images
 
 ## Deploying the stack
 
-Edit the .env file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
+Make a copy of the `env.template` file and name it `.env`.  Use the `.env` file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
 
 There are two ways to bring up the stack, with internet connectivity and air-gapped.
 To bring up the stack run `docker compose up -d`
 
-To bring up the stack setup for an air-gapped environment run `docker compose -f docker-compose.yml -f air-gapped.yml up -d`
+To bring up the stack setup for an air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml up -d`
 
 ---
 
@@ -60,6 +60,9 @@ To bring up the stack setup for an air-gapped environment run `docker compose -f
 
 To bring down the stack without purging the data run `docker compose down`
 To bring down the stack and remove the data run `docker compose down -v`
+
+To bring down the stack running in the air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml down`
+To bring down the stack running in the air-gapped configuration and remove the data run `docker compose -f docker-compose.yml -f air-gapped.yml down -v`
 
 ---
 
