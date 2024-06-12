@@ -47,9 +47,11 @@ Initially, internet access is required to build and pull the images.  The images
 
 ## Deploying the stack
 
-Edit the .env file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
+Make a copy of the `env.template` file and name it `.env`.  Use the `.env` file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
 
 To bring up the stack run `docker compose up -d`
+
+To bring up the stack setup for an air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml up -d`
 
 ---
 
@@ -58,28 +60,20 @@ To bring up the stack run `docker compose up -d`
 To bring down the stack without purging the data run `docker compose down`
 To bring down the stack and remove the data run `docker compose down -v`
 
+To bring down the stack running in the air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml down`
+To bring down the stack running in the air-gapped configuration and remove the data run `docker compose -f docker-compose.yml -f air-gapped.yml down -v`
+
 ---
 
-## Running without EPR and EAR
+## Running Air-Gapped 
 
-### Removing references to the Elastic Package Registry (EPR)
+The `air-gapped.yml` configures the stack to utilize local Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) services.  These services are required in an air-gapped environment to install integrations and binaries required by the stack.
 
-Comment out the sections between the `##### Comment out if EPR is not desired #####` and `##### End EPR Comment #####` markers.  
+---
 
-There are 3 sections for the EPR in the `docker-compose.yml`:
+## Profiles
 
-- Under `services`, comment out the entire `epr` section.
-- Under `services` -> `kibana` -> `depends_on`, comment out the `epr` section.
-- Under `services` -> `kibana` -> `environment`, comment out the `- XPACK_FLEET_REGISTRYURL=` line.
-
-### Removing references to the Elastic Artifact Registry (EAR)
-
-Comment out the section between the `##### Comment out if EAR is not desired #####` and `##### End EAR Comment #####` markers.
-
-There is 1 section for the EAR in the `docker-compose.yml`:
-
-- Under `services`, comment out the entire `ear` section.
-- Under `services` -> `fleet-server` -> `volumes`, comment out the `- ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh` line.
+PROFILE INFO HERE
 
 ---
 
