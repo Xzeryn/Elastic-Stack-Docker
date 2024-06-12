@@ -1,0 +1,9 @@
+app/.venv
+app/__pycache__
+tmp/
+license-key/
+*/*es-license.json
+troubleshooting.txt
+TODO.md
+.vscode/
+.env
