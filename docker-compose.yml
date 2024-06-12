@@ -308,7 +308,6 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
-    entrypoint: ["fleet-startup.sh"]
     restart: always
     volumes:
       - certs:/certs

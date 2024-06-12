@@ -41,5 +41,6 @@ services:
   fleet-server:
     volumes:
       - ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh
+    entrypoint: ["fleet-startup.sh"]
 
 
