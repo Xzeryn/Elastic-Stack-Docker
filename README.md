@@ -6,7 +6,7 @@ It is based heavily on the work done by elkninja and adds local copies of the El
 
 **WARNING:** The Elastic Package Registry image is ~15G and the Elastic Artifact Registry is ~4G in size.  
 
-The EPR and EAR are integrated into the project, but not required for the Elastic stack to function.  To disable the local EPR/EAR and use the official registries on the elastic.co site, you will need to comment out sections of various files.  (Instructions below) 
+The EPR and EAR are integrated into the project, but not required for the Elastic stack to function.  
 
 The project creates certs and stands up a 3-node Elasticsearch cluster, with Kibana and Fleet-Server already preconfigured.  It also stands up Logstash, Metricbeat, Filebeat, and a webapp APM example container.
 
@@ -49,6 +49,7 @@ Initially, internet access is required to build and pull the images.  The images
 
 Make a copy of the `env.template` file and name it `.env`.  Use the `.env` file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
 
+There are two ways to bring up the stack, with internet connectivity and air-gapped.
 To bring up the stack run `docker compose up -d`
 
 To bring up the stack setup for an air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml up -d`
