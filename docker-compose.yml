@@ -27,39 +27,6 @@ networks:
     external: false
 
 services:
-  ##### Comment out if EPR is not desired #####
-  epr:
-    image: docker.elastic.co/package-registry/distribution:${STACK_VERSION}
-    container_name: epr
-    restart: always
-    ports:
-      - ${EPR_PORT}:8080
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f -L http://localhost:8080/health"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-  ##### End EPR Comment #####
-
-  ##### Comment out if EAR is not desired #####
-  ear:
-    image: elastic-artifact-registry:${STACK_VERSION}
-    build:
-      context: elastic_artifact_registry_container
-      dockerfile: Dockerfile
-      args:
-        - ELASTIC_VERSION=${STACK_VERSION}
-    container_name: ear
-    restart: always
-    ports:
-      - ${EAR_PORT}:9080
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f -L http://localhost:9080/"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-  ##### End EAR Comment #####   
-
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
@@ -293,10 +260,6 @@ services:
     depends_on:
       es01:
         condition: service_healthy
-      ##### Comment out if EPR is not desired #####
-      epr:
-        condition: service_healthy
-      ##### End EPR Comment #####
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     restart: always
     labels:
@@ -323,9 +286,6 @@ services:
       - SERVER_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
       - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
-      ##### Comment out if EPR is not desired #####
-      - XPACK_FLEET_REGISTRYURL=http://epr:8080
-      ##### End EPR Comment #####
       - FLEET_PORT=${FLEET_PORT}
       - ES_PORT=${ES_PORT}
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
@@ -358,9 +318,6 @@ services:
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/proc:/hostfs/proc:ro"
       - "/:/hostfs:ro"
-      ##### Comment out if EAR is not desired #####
-      - ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh
-      ##### End EAR Comment #####
     ports:
       - ${FLEET_PORT}:8220
       - ${APMSERVER_PORT}:8200

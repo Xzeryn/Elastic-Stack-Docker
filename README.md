@@ -6,7 +6,7 @@ It is based heavily on the work done by elkninja and adds local copies of the El
 
 **WARNING:** The Elastic Package Registry image is ~15G and the Elastic Artifact Registry is ~4G in size.  
 
-The EPR and EAR are integrated into the project, but not required for the Elastic stack to function.  To disable the local EPR/EAR and use the official registries on the elastic.co site, you will need to comment out sections of various files.  (Instructions below) 
+The EPR and EAR are integrated into the project, but not required for the Elastic stack to function.  
 
 The project creates certs and stands up a 3-node Elasticsearch cluster, with Kibana and Fleet-Server already preconfigured.  It also stands up Logstash, Metricbeat, Filebeat, and a webapp APM example container.
 
@@ -49,7 +49,10 @@ Initially, internet access is required to build and pull the images.  The images
 
 Edit the .env file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
 
+There are two ways to bring up the stack, with internet connectivity and air-gapped.
 To bring up the stack run `docker compose up -d`
+
+To bring up the stack setup for an air-gapped environment run `docker compose -f docker-compose.yml -f air-gapped.yml up -d`
 
 ---
 
@@ -60,26 +63,15 @@ To bring down the stack and remove the data run `docker compose down -v`
 
 ---
 
-## Running without EPR and EAR
+## Running Air-Gapped 
 
-### Removing references to the Elastic Package Registry (EPR)
+The `air-gapped.yml` configures the stack to utilize local Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) services.  These services are required in an air-gapped environment to install integrations and binaries required by the stack.
 
-Comment out the sections between the `##### Comment out if EPR is not desired #####` and `##### End EPR Comment #####` markers.  
+---
 
-There are 3 sections for the EPR in the `docker-compose.yml`:
+## Profiles
 
-- Under `services`, comment out the entire `epr` section.
-- Under `services` -> `kibana` -> `depends_on`, comment out the `epr` section.
-- Under `services` -> `kibana` -> `environment`, comment out the `- XPACK_FLEET_REGISTRYURL=` line.
-
-### Removing references to the Elastic Artifact Registry (EAR)
-
-Comment out the section between the `##### Comment out if EAR is not desired #####` and `##### End EAR Comment #####` markers.
-
-There is 1 section for the EAR in the `docker-compose.yml`:
-
-- Under `services`, comment out the entire `ear` section.
-- Under `services` -> `fleet-server` -> `volumes`, comment out the `- ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh` line.
+PROFILE INFO HERE
 
 ---
 
