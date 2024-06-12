@@ -17,7 +17,7 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM.
 ## Stack Components
 
 - Elasticsearch (`es01`, `es02`, `es03`)
-- Kibana (`kibana`)
+- Kibana (`kibana`) - accessible through https://localhost:5601/
 - Fleet Server (`fleet-server`): Provides fleet and apm server functions
 ##
 - Elastic Package Registry (`epr`): Provides local copy of required elastic packages
@@ -102,7 +102,7 @@ Usage Examples:
 **APM** 
 - Configures sample web application in the cluster that is insturmented with the elastic APM agent
 - The webapp allows for the generation of error codes and messages that can be seen in the Kibana APM section
-- Access the webapp through `http://localhost:8000`
+- Access the webapp through http://localhost:8000
 - Use `--profile apm` in your docker compose startup command to enable
 
 **Agent** 
