@@ -98,21 +98,7 @@ xpack.fleet.agentPolicies:
       - name: system-docker_agent
         package:
           name: system
-      # - name: cef-docker_agent
-      #   package:
-      #     name: cef
-      #   inputs:
-      #     - type: logfile
-      #       enabled: true
-      #       streams:
-      #         - data_stream:
-      #             dataset: cef.log
-      #             type: logs
-      #           enabled: true
-      #           vars:
-      #             - name: paths
-      #               value: 
-      #                 - /var/log/ingest_data/cef.log
+
 
 
 
