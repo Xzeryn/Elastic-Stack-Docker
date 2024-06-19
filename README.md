@@ -29,7 +29,7 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM.
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
 ##
 - Web App (`webapp`): Demo web application that allows triggering of errors visible in the APM section of Kibana
-- Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations
+- Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations.  It provides the ability to ingest files into the cluster through the `/agent_ingest_data/` folder, as well as through UDP port `9003` and TCP port `9004`. 
 
 ---
 
@@ -89,13 +89,13 @@ Usage Examples:
 - Use `--profile monitoring` in your docker compose startup command to enable
 
 **Filebeat**
-- Configures filebeat in the cluster to ingest data from the filebeat_ingest_data folder
+- Configures filebeat in the cluster to ingest data from the `filebeat_ingest_data` folder
 - Drop .log files in this folder to ingest 
 - Filebeat is also configured to pull logs for all docker containers (visible in the Kibana Logs Stream viewer)
 - Use `--profile filebeat` in your docker compose startup command to enable
 
 **Logstash**
-- Configures logstash in the cluster to ingest data from the logstash_ingest_data folder
+- Configures logstash in the cluster to ingest data from the `logstash_ingest_data` folder
 - Edit the `logstash.conf` file to try out different ingest pipelines
 - Use `--profile logstash` in your docker compose startup command to enable
 
@@ -106,9 +106,27 @@ Usage Examples:
 - Use `--profile apm` in your docker compose startup command to enable
 
 **Agent** 
-- Configures an Elastic Agent container in the cluster registered in Fleet with only the system integration enabled
+- Configures an Elastic Agent container in the cluster registered in Fleet with 3 custom log integrations enabled
+- Data ingested in through this container may not be parsed and requires modifying the integration setting or ingest pipeline to parse into the format desired.
 - The agent container allows for experimentation with agent integrations in the Kibana Fleet section
 - Use `--profile agent` in your docker compose startup command to enable
+- Methods to ingest data:
+
+1. Using Custom Logs integraton: 
+    * Drop log files in the `agent_ingest_data` folder to ingest logs using the Custom Logs integration.  
+    * The data will be in the `messages` field of the `logs-generic-*` index. 
+    * Modify the processor field of the integration (in the settings) or the `logs-generic-*` pipeline to extract and format the data.
+2. Using the Custom UDP Logs integration:
+    * Send logs over UDP to the docker host IP to the port designated in the `.env` file (default: `9003`)
+    * The integration has syslog parsing enabled by default
+    * Changes can be made to the `logs-udp.generic-*` ingest pipeline for additional formatting or to the settings of the integration
+3. Using the Custom TCP Logs integration:
+    * Send logs over TCP to the docker host IP to the port designated in the `.env` file (default: `9004`)
+    * The integration has syslog parsing enabled by default
+    * Changes can be made to the `logs-TCP.generic-*` ingest pipeline for additional formatting or to the settings of the integration
+
+- [Help defining processors in integration settings](https://www.elastic.co/guide/en/fleet/current/elastic-agent-processor-configuration.html)
+- [Help configuring ingest pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html)
 
 
 ---
