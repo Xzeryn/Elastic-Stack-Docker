@@ -385,6 +385,15 @@ services:
       - KB_KEY=certs/kibana/kibana.key
     command:
       -strict.perms=false
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert /usr/share/metricbeat/certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
   # Filebeat is configured to ingest data from the filebeat_ingest_data folder, drop .log files in this folder to ingest
   # Filebeat is also configured to pull logs for all docker containers (visible in the Logs Stream viewer) (Optional)
@@ -415,6 +424,15 @@ services:
       - CA_CERT=certs/ca/ca.crt
     command:
       -strict.perms=false
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert /usr/share/filebeat/certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
   # Logstash is configured to ingest data from the logstash_ingest_data folder (Optional)
   logstash01:
@@ -440,10 +458,20 @@ services:
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://es01:9200
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert /usr/share/logstash//certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
   # The webapp is an example insturmentation of the elastic APM agent. (Optional)
   # Access the webapp through http://localhost:8000
   webapp:
+    image: webapp:${STACK_VERSION}
     build:
       context: app
     profiles:
@@ -457,6 +485,15 @@ services:
       - "/:/hostfs:ro"
     ports:
       - ${APM_APP_PORT}:8000
+    healthcheck:
+      test:
+        [ 
+          "CMD-SHELL", 
+          "curl -s http://localhost:8000",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
   # The container-agent is an example of insturmenting an agent within a docker container
   container-agent:
@@ -494,5 +531,14 @@ services:
       - INTEGRATION_LOGS_VERSION=${INTEGRATION_LOGS_VERSION}
       - INTEGRATION_TCP_LOGS_VERSION=${INTEGRATION_TCP_LOGS_VERSION}
       - INTEGRATION_UDP_LOGS_VERSION=${INTEGRATION_UDP_LOGS_VERSION}
+    healthcheck:
+      test:
+        [ 
+          "CMD-SHELL", 
+          "curl -s --cacert /certs/ca/ca.crt https://fleet-server:8220/api/status | grep HEALTHY 2>&1 >/dev/null",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
 
