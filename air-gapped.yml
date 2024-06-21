@@ -1,5 +1,4 @@
 
-
 services:
   epr:
     image: docker.elastic.co/package-registry/distribution:${STACK_VERSION}
@@ -40,7 +39,9 @@ services:
 
   fleet-server:
     volumes:
-      - ./fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh
+      - ./config/air-gapped_fleet-startup.sh:/usr/share/elastic-agent/fleet-startup.sh
+    environment:
+      - EAR_PORT=${EAR_PORT}
     entrypoint: ["fleet-startup.sh"]
 
 
