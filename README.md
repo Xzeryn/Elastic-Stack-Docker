@@ -91,7 +91,9 @@ Examples:
 
 ```
 docker compose config
+```
 or
+```
 docker compose --profile monitoring config
 ```
 
@@ -121,9 +123,13 @@ To bring down the stack without purging the data volumes, execute the same comma
 
 ```
 docker compose down
+```
 or
+```
 docker compose --profile monitoring down
+```
 or
+```
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down
 ```
 
@@ -131,9 +137,13 @@ To bring down the stack and remove the data volumes, add `-v` to your command
 
 ```
 docker compose down -v
+```
 or
+```
 docker compose --profile monitoring down -v
+```
 or
+```
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down -v
 ```
 
