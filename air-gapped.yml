@@ -1,5 +1,4 @@
 
-
 services:
   epr:
     image: docker.elastic.co/package-registry/distribution:${STACK_VERSION}

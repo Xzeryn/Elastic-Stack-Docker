@@ -16,20 +16,30 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM.
 
 ## Stack Components
 
+This project is broken into multiple docker compose files that build on each other, enabling multiple final configurations when the stack is brought up.
+
+The `docker-compose.yml` is the base configuration of the stack. It generates the certs required and brings online the elasticsearch nodes, kibana, and fleet server. Therefore, it will always be used when issuing the `docker compose up` command.
+
+The `air-gapped.yml` adds to the base configuration provided by the `docker-compose.yml` and provides the configuration changes and containers necessary to run the Elastic stack in an air-gapped environment.
+
+The `examples.yml` adds different functionality to the base configuration by bringing online different containers using docker's [profiles](#profiles) feature. (see below).  This file is included at the top of the `docker-compose.yml`.
+
+#### docker-compose.yml
 - Elasticsearch (`es01`, `es02`, `es03`)
 - Kibana (`kibana`) - accessible through https://localhost:5601/
 - Fleet Server (`fleet-server`): Provides fleet and apm server functions
+
 ##
+#### air-gapped.yml
 - Elastic Package Registry (`epr`): Provides local copy of required elastic packages
 - Elastic Artifact Registry (`ear`): Provides local copy of elastic binaries for agent install
+
 ##
+#### examples.yml
 - Metricbeat (`metricbeat01`): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
-##
 - Filebeat (`filebeat01`): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
-##
 - Web App (`webapp`): Demo web application that allows triggering of errors visible in the APM section of Kibana
-##
 - Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations.  It provides the ability to ingest files into the cluster through the `/agent_ingest_data/` folder, as well as through UDP port `9003` and TCP port `9004`. 
 
 ---
@@ -37,6 +47,7 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM.
 ## Prerequisites
 
 - Docker
+- Docker Compose version `2.20.3` or greater
 
 ---
 
@@ -45,31 +56,75 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM.
 Initially, internet access is required to build and pull the images.  The images are built or pulled automatically when docker compose executes.
 
 ---
-
-## Deploying the stack
+## Initial Setup
 
 Make a copy of the `env.template` file and name it `.env`.  Use the `.env` file to change settings.  You must set the `DOCKER_HOST_IP` variable to the correct host IP for the stack deployment to work
 
-There are two ways to bring up the stack, with internet connectivity and air-gapped.
-To bring up the stack run `docker compose up -d`
+## Deploying the stack
 
-To bring up the stack setup for an air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml up -d`
+The stack can be deployed in many configurations including air-gapped.  The various configurations can be enabled using the profiles feature of docker compose.
 
----
+#### Usage:
+To bring up the basic stack (Elasticsearch, Kibana and Fleet Server):
 
-## Bring down the stack
+```
+docker compose up -d
+```
 
-To bring down the stack without purging the data run `docker compose down`
-To bring down the stack and remove the data run `docker compose down -v`
+To enable included examples reference the [profiles](#profiles) section below. For example, to bring up the stack with Metricbeat enabled for cluster monitoring use the following command:
 
-To bring down the stack running in the air-gapped configuration run `docker compose -f docker-compose.yml -f air-gapped.yml down`
-To bring down the stack running in the air-gapped configuration and remove the data run `docker compose -f docker-compose.yml -f air-gapped.yml down -v`
+```
+docker compose --profile monitoring up -d
+```
+
+Multiple profiles can also be chained together.
+The following command enables Metricbeat, Logstash and an APM example.
+
+```
+docker compose --profile monitoring --profile logstash --profile apm up -d
+```
 
 ---
 
 ## Running Air-Gapped 
 
 The `air-gapped.yml` configures the stack to utilize local Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) services.  These services are required in an air-gapped environment to install integrations and binaries required by the stack.
+
+Using the air-gapped configuration requires chaining multiple docker-compose files due to configuration changes that need to be made to the base configuration.  This is done using the `-f <filename>` flag when executing the `docker compose` command.
+
+#### Usage:
+To bring up the basic air-gapped stack (Elasticsearch, Kibana, Fleet Server, EAR, and EPR):
+```
+docker compose -f docker-compose.yml -f air-gapped.yml up -d
+```
+Profiles may also be used when using air-gapped.  Using the same metricbeat example above, the command would be:
+```
+docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring up -d
+```
+
+---
+
+## Bring down the stack
+
+To bring down the stack without purging the data volumes, execute the same command (including `-f <filename>` and `--profile` flags) but replace the `up -d` with `down`
+
+```
+docker compose down
+or
+docker compose --profile monitoring down
+or
+docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down
+```
+
+To bring down the stack and remove the data volumes, add `-v` to your command
+
+```
+docker compose down -v
+or
+docker compose --profile monitoring down -v
+or
+docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down -v
+```
 
 ---
 
@@ -128,7 +183,6 @@ Usage Examples:
 
 - [Help defining processors in integration settings](https://www.elastic.co/guide/en/fleet/current/elastic-agent-processor-configuration.html)
 - [Help configuring ingest pipelines](https://www.elastic.co/guide/en/elasticsearch/reference/current/ingest.html)
-
 
 ---
 

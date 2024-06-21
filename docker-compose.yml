@@ -1,3 +1,5 @@
+include:
+  - examples.yml
 
 volumes:
   certs:
@@ -11,12 +13,6 @@ volumes:
   esdata03:
     driver: local
   kibanadata:
-    driver: local
-  metricbeatdata01:
-    driver: local
-  filebeatdata01:
-    driver: local
-  logstashdata01:
     driver: local
   fleetserverdata:
     driver: local
@@ -352,193 +348,193 @@ services:
       timeout: 10s
       retries: 120
 
-  # Metricbeat is used for stack monitoring (Optional)
-  metricbeat01:
-    depends_on:
-      es01:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
-    profiles:
-      - monitoring
-    restart: always
-    user: root
-    volumes:
-      - certs:/usr/share/metricbeat/certs
-      - metricbeatdata01:/usr/share/metricbeat/data
-      - "./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
-      - "/proc:/hostfs/proc:ro"
-      - "/:/hostfs:ro"
-    environment:
-      - ELASTIC_USER=elastic
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - ELASTIC_HOSTS=https://es01:9200,https://es02:9200,https://es03:9200
-      - KIBANA_HOSTS=https://kibana:5601
-      - LOGSTASH_HOSTS=http://logstash01:9600
-      - CA_CERT=certs/ca/ca.crt
-      - ES_CERT=certs/es01/es01.crt
-      - ES_KEY=certs/es01/es01.key
-      - KB_CERT=certs/kibana/kibana.crt
-      - KB_KEY=certs/kibana/kibana.key
-    command:
-      -strict.perms=false
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert /usr/share/metricbeat/certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+  # # Metricbeat is used for stack monitoring (Optional)
+  # metricbeat01:
+  #   depends_on:
+  #     es01:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
+  #   image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
+  #   profiles:
+  #     - monitoring
+  #   restart: always
+  #   user: root
+  #   volumes:
+  #     - certs:/usr/share/metricbeat/certs
+  #     - metricbeatdata01:/usr/share/metricbeat/data
+  #     - "./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #     - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
+  #     - "/proc:/hostfs/proc:ro"
+  #     - "/:/hostfs:ro"
+  #   environment:
+  #     - ELASTIC_USER=elastic
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #     - ELASTIC_HOSTS=https://es01:9200,https://es02:9200,https://es03:9200
+  #     - KIBANA_HOSTS=https://kibana:5601
+  #     - LOGSTASH_HOSTS=http://logstash01:9600
+  #     - CA_CERT=certs/ca/ca.crt
+  #     - ES_CERT=certs/es01/es01.crt
+  #     - ES_KEY=certs/es01/es01.key
+  #     - KB_CERT=certs/kibana/kibana.crt
+  #     - KB_KEY=certs/kibana/kibana.key
+  #   command:
+  #     -strict.perms=false
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s --cacert /usr/share/metricbeat/certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
 
-  # Filebeat is configured to ingest data from the filebeat_ingest_data folder, drop .log files in this folder to ingest
-  # Filebeat is also configured to pull logs for all docker containers (visible in the Logs Stream viewer) (Optional)
-  filebeat01:
-    depends_on:
-      es01:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
-    profiles:
-      - filebeat
-    restart: always
-    user: root
-    volumes:
-      - certs:/usr/share/filebeat/certs
-      - filebeatdata01:/usr/share/filebeat/data
-      - "./filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
-      - "./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
-      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    environment:
-      - ELASTIC_USER=elastic
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - ELASTIC_HOSTS=https://es01:9200
-      - KIBANA_HOSTS=https://kibana:5601
-      - LOGSTASH_HOSTS=http://logstash01:9600
-      - CA_CERT=certs/ca/ca.crt
-    command:
-      -strict.perms=false
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert /usr/share/filebeat/certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+  # # Filebeat is configured to ingest data from the filebeat_ingest_data folder, drop .log files in this folder to ingest
+  # # Filebeat is also configured to pull logs for all docker containers (visible in the Logs Stream viewer) (Optional)
+  # filebeat01:
+  #   depends_on:
+  #     es01:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
+  #   image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+  #   profiles:
+  #     - filebeat
+  #   restart: always
+  #   user: root
+  #   volumes:
+  #     - certs:/usr/share/filebeat/certs
+  #     - filebeatdata01:/usr/share/filebeat/data
+  #     - "./filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
+  #     - "./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+  #     - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   environment:
+  #     - ELASTIC_USER=elastic
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #     - ELASTIC_HOSTS=https://es01:9200
+  #     - KIBANA_HOSTS=https://kibana:5601
+  #     - LOGSTASH_HOSTS=http://logstash01:9600
+  #     - CA_CERT=certs/ca/ca.crt
+  #   command:
+  #     -strict.perms=false
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s --cacert /usr/share/filebeat/certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
 
-  # Logstash is configured to ingest data from the logstash_ingest_data folder (Optional)
-  logstash01:
-    depends_on:
-      es01:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
-    profiles:
-      - logstash
-    restart: always
-    labels:
-      co.elastic.logs/module: logstash
-    user: root
-    volumes:
-      - certs:/usr/share/logstash/certs
-      - logstashdata01:/usr/share/logstash/data
-      - "./logstash_ingest_data/:/usr/share/logstash/ingest_data/"
-      - "./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
-    environment:
-      - xpack.monitoring.enabled=false
-      - ELASTIC_USER=elastic
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - ELASTIC_HOSTS=https://es01:9200
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert /usr/share/logstash//certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+  # # Logstash is configured to ingest data from the logstash_ingest_data folder (Optional)
+  # logstash01:
+  #   depends_on:
+  #     es01:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
+  #   image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
+  #   profiles:
+  #     - logstash
+  #   restart: always
+  #   labels:
+  #     co.elastic.logs/module: logstash
+  #   user: root
+  #   volumes:
+  #     - certs:/usr/share/logstash/certs
+  #     - logstashdata01:/usr/share/logstash/data
+  #     - "./logstash_ingest_data/:/usr/share/logstash/ingest_data/"
+  #     - "./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
+  #   environment:
+  #     - xpack.monitoring.enabled=false
+  #     - ELASTIC_USER=elastic
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #     - ELASTIC_HOSTS=https://es01:9200
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s --cacert /usr/share/logstash//certs/ca/ca.crt https://es01:9200 | grep -q 'missing authentication credentials'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
 
-  # The webapp is an example insturmentation of the elastic APM agent. (Optional)
-  # Access the webapp through http://localhost:8000
-  webapp:
-    image: webapp:${STACK_VERSION}
-    build:
-      context: app
-    profiles:
-      - apm
-    restart: always
-    volumes:
-      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
-      - "/proc:/hostfs/proc:ro"
-      - "/:/hostfs:ro"
-    ports:
-      - ${APM_APP_PORT}:8000
-    healthcheck:
-      test:
-        [ 
-          "CMD-SHELL", 
-          "curl -s http://localhost:8000",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+  # # The webapp is an example insturmentation of the elastic APM agent. (Optional)
+  # # Access the webapp through http://localhost:8000
+  # webapp:
+  #   image: webapp:${STACK_VERSION}
+  #   build:
+  #     context: app
+  #   profiles:
+  #     - apm
+  #   restart: always
+  #   volumes:
+  #     - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #     - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
+  #     - "/proc:/hostfs/proc:ro"
+  #     - "/:/hostfs:ro"
+  #   ports:
+  #     - ${APM_APP_PORT}:8000
+  #   healthcheck:
+  #     test:
+  #       [ 
+  #         "CMD-SHELL", 
+  #         "curl -s http://localhost:8000",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
 
-  # The container-agent is an example of insturmenting an agent within a docker container
-  container-agent:
-    depends_on:
-      fleet-server:
-        condition: service_healthy
-    hostname: container-agent
-    image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
-    profiles:
-      - agent
-    restart: always
-    volumes:
-      - certs:/certs
-      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./agent_ingest_data:/tmp/ingest_data"
-      # The following line is not required, nor is the `entrypoint` line. They are running a script to add 
-      # integrations to the Fleet policy this agent connects to for demo functionality
-      - ./config/agent_add_integrations-startup.sh:/usr/share/elastic-agent/agent-startup.sh
-    entrypoint: ["agent-startup.sh"]
-    ports:
-      - ${AGENT_SYSLOG_UDP_PORT}:9003
-      - ${AGENT_SYSLOG_TCP_PORT}:9004
-    user: root
-    environment:
-      - SSL_CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
-      - CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
-      - FLEET_CA=/certs/ca/ca.crt
-      - FLEET_ENROLL=1
-      - FLEET_URL=https://fleet-server:8220
-      - KIBANA_HOST=https://kibana:5601
-      - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
-      - KIBANA_FLEET_CA=/certs/ca/ca.crt
-      - FLEET_TOKEN_POLICY_NAME=Docker-Container-Policy
-      - INTEGRATION_LOGS_VERSION=${INTEGRATION_LOGS_VERSION}
-      - INTEGRATION_TCP_LOGS_VERSION=${INTEGRATION_TCP_LOGS_VERSION}
-      - INTEGRATION_UDP_LOGS_VERSION=${INTEGRATION_UDP_LOGS_VERSION}
-    healthcheck:
-      test:
-        [ 
-          "CMD-SHELL", 
-          "curl -s --cacert /certs/ca/ca.crt https://fleet-server:8220/api/status | grep HEALTHY 2>&1 >/dev/null",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
+  # # The container-agent is an example of insturmenting an agent within a docker container
+  # container-agent:
+  #   depends_on:
+  #     fleet-server:
+  #       condition: service_healthy
+  #   hostname: container-agent
+  #   image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+  #   profiles:
+  #     - agent
+  #   restart: always
+  #   volumes:
+  #     - certs:/certs
+  #     - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #     - "./agent_ingest_data:/tmp/ingest_data"
+  #     # The following line is not required, nor is the `entrypoint` line. They are running a script to add 
+  #     # integrations to the Fleet policy this agent connects to for demo functionality
+  #     - ./config/agent_add_integrations-startup.sh:/usr/share/elastic-agent/agent-startup.sh
+  #   entrypoint: ["agent-startup.sh"]
+  #   ports:
+  #     - ${AGENT_SYSLOG_UDP_PORT}:9003
+  #     - ${AGENT_SYSLOG_TCP_PORT}:9004
+  #   user: root
+  #   environment:
+  #     - SSL_CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
+  #     - CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
+  #     - FLEET_CA=/certs/ca/ca.crt
+  #     - FLEET_ENROLL=1
+  #     - FLEET_URL=https://fleet-server:8220
+  #     - KIBANA_HOST=https://kibana:5601
+  #     - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
+  #     - KIBANA_FLEET_CA=/certs/ca/ca.crt
+  #     - FLEET_TOKEN_POLICY_NAME=Docker-Container-Policy
+  #     - INTEGRATION_LOGS_VERSION=${INTEGRATION_LOGS_VERSION}
+  #     - INTEGRATION_TCP_LOGS_VERSION=${INTEGRATION_TCP_LOGS_VERSION}
+  #     - INTEGRATION_UDP_LOGS_VERSION=${INTEGRATION_UDP_LOGS_VERSION}
+  #   healthcheck:
+  #     test:
+  #       [ 
+  #         "CMD-SHELL", 
+  #         "curl -s --cacert /certs/ca/ca.crt https://fleet-server:8220/api/status | grep HEALTHY 2>&1 >/dev/null",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
 
 
