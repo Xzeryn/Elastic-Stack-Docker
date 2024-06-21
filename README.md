@@ -65,6 +65,7 @@ Make a copy of the `env.template` file and name it `.env`.  Use the `.env` file 
 The stack can be deployed in many configurations including air-gapped.  The various configurations can be enabled using the profiles feature of docker compose.
 
 #### Usage:
+
 To bring up the basic stack (Elasticsearch, Kibana and Fleet Server):
 
 ```
@@ -82,6 +83,16 @@ The following command enables Metricbeat, Logstash and an APM example.
 
 ```
 docker compose --profile monitoring --profile logstash --profile apm up -d
+```
+
+**NOTE:** _You can view the configuration that docker compose will apply prior to starting the project by using the `config` parameter instead of `up -d`._ 
+
+Examples:
+
+```
+docker compose config
+or
+docker compose --profile monitoring config
 ```
 
 ---
