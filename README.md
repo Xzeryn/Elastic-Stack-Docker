@@ -18,7 +18,7 @@ Elasticsearch and Kibana are preconfigured and insturmented with APM.
 
 This project is broken into multiple docker compose files that build on each other, enabling multiple final configurations when the stack is brought up.
 
-The `docker-compose.yml` is the base configuration of the stack. It generates the certs required and brings online the elasticsearch nodes, kibana, and fleet server. Therefore, it will always be used when issuing the `docker compose up` command.
+The `docker-compose.yml` is the base configuration of the stack. It generates the certs required and brings online the Elasticsearch nodes, Kibana, and Fleet/APM server. Therefore, it will always be used when issuing the `docker compose up` command.
 
 The `air-gapped.yml` adds to the base configuration provided by the `docker-compose.yml` and provides the configuration changes and containers necessary to run the Elastic stack in an air-gapped environment.
 
@@ -66,7 +66,7 @@ The stack can be deployed in many configurations including air-gapped.  The vari
 
 #### Usage:
 
-To bring up the basic stack (Elasticsearch, Kibana and Fleet Server):
+To bring up the basic stack (Elasticsearch, Kibana and Fleet/APM Server):
 
 ```
 docker compose up -d
@@ -106,7 +106,7 @@ The `air-gapped.yml` configures the stack to utilize local Elastic Package Regis
 Using the air-gapped configuration requires chaining multiple docker-compose files due to configuration changes that need to be made to the base configuration.  This is done using the `-f <filename>` flag when executing the `docker compose` command.
 
 #### Usage:
-To bring up the basic air-gapped stack (Elasticsearch, Kibana, Fleet Server, EAR, and EPR):
+To bring up the basic air-gapped stack (Elasticsearch, Kibana, Fleet/APM Server, EAR, and EPR):
 ```
 docker compose -f docker-compose.yml -f air-gapped.yml up -d
 ```
