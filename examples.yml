@@ -1,5 +1,7 @@
 
 volumes:
+  mldata01:
+    driver: local
   metricbeatdata01:
     driver: local
   filebeatdata01:
@@ -8,6 +10,59 @@ volumes:
     driver: local
 
 services:
+  # The ml01 is configured to be a dedicated ML node within the cluster large enough to download and install the ELSER model
+  ml01:
+    profiles:
+      - ml
+    depends_on:
+      es01:
+        condition: service_healthy
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    restart: always
+    labels:
+      co.elastic.logs/module: elasticsearch
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+      - mldata01:/usr/share/elasticsearch/data
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./config/es-docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+    environment:
+      - node.name=ml01
+      - node.roles=ml, remote_cluster_client
+      - cluster.name=${CLUSTER_NAME}
+      - discovery.seed_hosts=es01
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/ml01/ml01.key
+      - xpack.security.http.ssl.certificate=certs/ml01/ml01.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/ml01/ml01.key
+      - xpack.security.transport.ssl.certificate=certs/ml01/ml01.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${LICENSE}
+      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
+      - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+      - APMSERVER_PORT=${APMSERVER_PORT}
+    mem_limit: ${ML_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
   # Metricbeat is used for stack monitoring (Optional)
   metricbeat01:
     profiles:
@@ -196,5 +251,4 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-
-
+ 

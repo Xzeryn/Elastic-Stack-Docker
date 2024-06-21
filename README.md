@@ -36,6 +36,7 @@ The `examples.yml` adds different functionality to the base configuration by bri
 
 ##
 #### examples.yml
+- Machine Learning Node (`ml01`): Provides a dediated machine learning node to the cluster (default size is 8GB ram to allow for install of ELSER model)
 - Metricbeat (`metricbeat01`): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
 - Filebeat (`filebeat01`): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
@@ -160,6 +161,13 @@ Usage Examples:
 - `docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring --profile apm up -d`
 
 ### Available Profiles
+
+**Machine Learning**
+- Configures and adds a dedicated machine learning node to the Elastic Stack
+- Default configuration is set to 8GB of RAM to allow for the install of the ELSER model
+- The amount of memory can be changed by editing the `ML_MEM_LIMIT` variable in the `.env` file
+- Functionality is limited unless you enable the _trial_ or provide a _license_
+- User `--profile ml` in your docker compose startup command to enable
 
 **Monitoring** 
 - Configures metricbeat in the cluster and performs monitoring of the Elastic stack
