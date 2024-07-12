@@ -12,6 +12,6 @@ curl --cacert /certs/ca/ca.crt -u elastic:${KIBANA_FLEET_PASSWORD} -X POST "${KI
   "is_default": true
 }'
 
-# Elastic Agent Container Entrypoint
+# Elastic Agent Container Entrypoint 
 set -eo pipefail
 exec elastic-agent container "$@"

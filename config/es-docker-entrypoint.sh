@@ -85,5 +85,5 @@ else
 fi
 
 # Signal forwarding and child reaping is handled by `tini`, which is the
-# actual entrypoint of the container
+# actual entrypoint of the container 
 exec /usr/share/elasticsearch/bin/elasticsearch "$@" $POSITIONAL_PARAMETERS <<<"$KEYSTORE_PASSWORD"
