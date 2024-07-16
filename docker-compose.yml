@@ -345,6 +345,7 @@ services:
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
       - KIBANA_HOST=https://kibana:5601
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+    mem_limit: ${FLEET_MEM_LIMIT}
     healthcheck:
       test:
         [ 
