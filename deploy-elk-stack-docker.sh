@@ -1,5 +1,11 @@
 #!/bin/bash
-
+#################################################################
+# Script Name : deploy-elk-stack-docker.sh                      #
+# Author      : Tamir Suliman                                   #                        
+# Date        : 2024-09-09                                      #
+# Version     : 1.0                                             #
+# License     : MIT License                                     #
+#################################################################
 
 ##### vm_max_map check ##
 current_value=$(sysctl vm.max_map_count | awk '{print $3}')
