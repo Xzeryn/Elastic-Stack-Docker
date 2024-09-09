@@ -30,37 +30,44 @@ fi
 
 
 usage() {
-  echo "Usage: $0 [-p profiles] [-a air-gapped] [-d down] [-v volumes]"
+  echo "Usage: $0 [-p profiles] [-a air-gapped] [up|down] [-d] [-v]"
   echo ""
   echo "Options:"
-  echo "  -p, --profiles   Specify profiles (comma-separated) for Docker Compose"
+  echo "  -p, --profiles   Specify profiles -- comma-separated -- for Docker Compose"
   echo "  -a, --air-gapped Use the air-gapped setup"
-  echo "  -d, --down       Bring down the stack"
-  echo "  -v, --volumes    Remove data volumes when bringing down the stack"
+  echo "  up               Bring up the stack"
+  echo "  down             Bring down the stack"
+  echo "  -d               Detach (run in background)"
+  echo "  -v               Remove data volumes when bringing down the stack"
   exit 1
 }
 
 # ELK Docker script Options 
 PROFILES=""
 AIR_GAPPED=false
-ACTION="up -d"
+ACTION=""
+DETACH=false
 VOLUMES=false
-
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
     -p|--profiles) PROFILES="$2"; shift ;;
     -a|--air-gapped) AIR_GAPPED=true ;;
-    -d|--down) ACTION="down" ;;
-    -v|--volumes) VOLUMES=true ;;
+    up|down) ACTION="$1" ;;
+    -d) DETACH=true ;;
+    -v) VOLUMES=true ;;
     *) usage ;;
   esac
   shift
 done
 
+
 # Docker Compose command
 COMPOSE_CMD="docker compose"
 
+if [ -z "$ACTION" ]; then
+  usage
+fi
 
 if [ "$AIR_GAPPED" = true ]; then
   COMPOSE_CMD="$COMPOSE_CMD -f docker-compose.yml -f air-gapped.yml"
@@ -76,6 +83,10 @@ if [ -n "$PROFILES" ]; then
 fi
 
 COMPOSE_CMD="$COMPOSE_CMD $ACTION"
+
+if [ "$DETACH" = true ] && [ "$ACTION" = "up" ]; then
+  COMPOSE_CMD="$COMPOSE_CMD -d"
+fi
 
 if [ "$VOLUMES" = true ]; then
   COMPOSE_CMD="$COMPOSE_CMD -v"
