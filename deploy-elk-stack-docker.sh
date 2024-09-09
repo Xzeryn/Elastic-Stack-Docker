@@ -16,10 +16,22 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+
 docker_compose_version=$(docker compose version --short)
 if [ $? -ne 0 ]; then
   echo "ERROR -->  Docker Compose is not installed..."
   exit 1
+  echo "Docker Compose is installed: $docker_compose_version"
+  
+  # Check if Docker Compose version is 2.20.3 or greater
+  required_version="2.20.3"
+  if [ "$(printf '%s\n' "$required_version" "$docker_compose_version" | sort -V | head -n1)" != "$required_version" ]; then
+    echo "ERROR --> Docker Compose version is less than 2.20.3. Please update."
+    exit 1
+  else
+    echo "Docker Compose version meets the requirement: $docker_compose_version"
+  fi
+
 fi
 
 if [ ! -f ".env" ]; then
