@@ -8,6 +8,8 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
+  mapsdata:
+    driver: local
 
 services:
   # The ml01 is configured to be a dedicated ML node within the cluster large enough to download and install the ELSER model
@@ -252,3 +254,29 @@ services:
       timeout: 10s
       retries: 120
  
+  maps:
+    profiles:
+      - maps                   
+    image: docker.elastic.co/elastic-maps-service/elastic-maps-server:${STACK_VERSION}
+    container_name: maps
+    restart: always
+    ports:
+      - 8088:8080
+    environment:
+      - elasticsearch.host=https://es01:9200
+      - elasticsearch.username=elastic
+      - elasticsearch.password=${ELASTIC_PASSWORD}
+      - elasticsearch.ssl.verificationMode=certificate
+      - elasticsearch.ssl.certificateAuthorities=/usr/src/app/server/certs/ca.crt
+    volumes:
+      - certs:/usr/src/app/server/certs
+      - ./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml
+      - ./maps/planet.mbtiles:/usr/src/app/data/planet.mbtiles
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -L http://localhost:8080/status"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    volumes:
+      - "./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml"
+      - "./mapsdata:/usr/src/app/data"

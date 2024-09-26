@@ -1,0 +1,24 @@
+# Elasticsearch 
+elasticsearch:
+  host: "https://${DOCKER_HOST_IP}:${ES_PORT}"  
+  username: "elastic"                           
+  password: "${ELASTIC_PASSWORD}"               
+
+  ssl:
+    certificateAuthorities: ["/certs/ca/ca.crt"] 
+    certificate: "/certs/elastic-certificates.crt" 
+    key: "/certs/elastic-certificates.key"         
+    keyPassphrase: ""                              
+    verificationMode: "full"                       
+# General settings
+host: "${DOCKER_HOST_IP}"          
+port: ${EPR_PORT}                 
+basePath: "/maps"                  
+ui: true                           
+
+# Logging settings
+logging:
+  level: "info"                    
+
+path:
+  planet: "/usr/src/app/data/planet.mbtiles" 
