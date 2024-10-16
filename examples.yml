@@ -261,13 +261,15 @@ services:
     container_name: maps
     restart: always
     ports:
-      - 8088:8080
+      - ${CUSTOM_MAPS_SERVICE_PORT}:8080
     environment:
       - elasticsearch.host=https://es01:9200
       - elasticsearch.username=elastic
       - elasticsearch.password=${ELASTIC_PASSWORD}
       - elasticsearch.ssl.verificationMode=certificate
       - elasticsearch.ssl.certificateAuthorities=/usr/src/app/server/certs/ca.crt
+      - "./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml"
+      - "./mapsdata:/usr/src/app/data"
     volumes:
       - certs:/usr/src/app/server/certs
       - ./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml
@@ -277,6 +279,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-    volumes:
-      - "./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml"
-      - "./mapsdata:/usr/src/app/data"
+
+
+      
