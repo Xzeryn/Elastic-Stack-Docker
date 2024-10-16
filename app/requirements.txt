@@ -1,6 +1,6 @@
 #elastic-apm==6.17.0
 elastic-apm
-fastapi==0.100.0
-httpx==0.24.1
-nicegui==1.3.2
-starlette==0.27.0
+fastapi==0.115.2
+httpx==0.27.2
+nicegui==2.2.0
+starlette==0.40.0
