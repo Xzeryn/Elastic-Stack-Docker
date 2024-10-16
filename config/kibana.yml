@@ -101,6 +101,7 @@ xpack.fleet.agentPolicies:
 
 
 
-
-
+# Maps settings
+map.includeElasticMapsService: false
+map.emsUrl: "${MAPS_SERVICE_URL}"
       
