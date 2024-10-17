@@ -62,6 +62,14 @@ services:
           "    ip:\n"\
           "      - 127.0.0.1\n"\
           "      - ${DOCKER_HOST_IP}\n"\
+          "  - name: ems-server\n"\
+          "    dns:\n"\
+          "      - ems-server\n"\
+          "      - elastic-maps-server\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "      - ${DOCKER_HOST_IP}\n"\
           > config/certs/instances.yml;
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;

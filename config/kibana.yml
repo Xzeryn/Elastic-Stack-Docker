@@ -99,7 +99,7 @@ xpack.fleet.agentPolicies:
         package:
           name: system
 
-# Maps settings
-map.includeElasticMapsService: ${USE_DEFAULT_MAPS}
-map.emsUrl: "${CUSTOM_MAPS_SERVICE_URL}"
+# # Maps settings
+# map.includeElasticMapsService: ${USE_DEFAULT_MAPS}
+# map.emsUrl: "${CUSTOM_MAPS_SERVICE_URL}"
       
