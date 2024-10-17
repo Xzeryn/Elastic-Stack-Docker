@@ -4,11 +4,12 @@ volumes:
 
 services:
   kibana:
+    depends_on:
+      ems-server:
+        condition: service_healthy
     environment:
-      # - USE_DEFAULT_MAPS=false
-      # - ELASTIC_MAPS_SERVICE_URL=http://ems-server:8080
-      - MAP_INCLUDEELASTICMAPSERVICE=false
-      - MAP_EMSURL=https://ems-server:8080
+      #- MAP_INCLUDEELASTICMAPSERVICE=true
+      - MAP_EMSURL=https://localhost:8085
   
   ems-server:
     depends_on:
@@ -16,27 +17,28 @@ services:
         condition: service_healthy                  
     image: docker.elastic.co/elastic-maps-service/elastic-maps-server:${STACK_VERSION}-amd64
     restart: always
-    user: root
-    hostname: elastic-maps-server
+    #user: root
+    hostname: ems-server
     ports:
       - ${ELASTIC_MAPS_SERVICE_PORT}:8080
     environment:
       - ELASTICSEARCH_HOST=https://es01:9200
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
-      - ELASTICSEARCH_SSL_CERTIFICATE=/etc/ssl/certs/es01/es01.crt
-      - ELASTICSEARCH_SSL_KEY=/etc/ssl/certs/es01/es01.key
-      - ELASTICSEARCH_SSL_VERIFICATIONMODE=certificate
-      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/etc/ssl/certs/ca/ca.crt
-      - SSL_ENABLED=true
-      - SSL_CERTIFICATE=/etc/ssl/certs/ems-server/ems-server.crt
-      - SSL_KEY=/etc/ssl/certs/ems-server/ems-server.key
     volumes:
-      - certs:/etc/ssl/certs
+      - certs:/etc/ssl/certs:ro
       - ./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml
-      - mapsdata01:/usr/src/app/data/
+      # By default this is set to use a volume mount to ensure the initial maps are configured
+      # If you wish to have more detailed maps you can download them and put the contents in the
+      # `ems_data` directory and comment out the volume mount and uncomment the directory mount
+      - mapsdata01:/usr/src/app/data
+      # - ./ems_data:/usr/src/app/data
     healthcheck:
-      test: ["CMD-SHELL", "curl -f -L https://localhost:8080/status"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert /etc/ssl/certs/ems-server/ems-server.crt https://ems-server:8080/status | grep -q 'All services are available'",
+        ]
       interval: 10s
       timeout: 10s
       retries: 120

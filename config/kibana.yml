@@ -2,7 +2,7 @@ elastic:
   apm:
     active: true
     # serverUrl: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
-    serverUrl: "http://fleet-server:8200"
+    serverUrl: "http://localhost:8200"
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
     environment: Elastic_Stack
 server.host: "0.0.0.0"
@@ -99,7 +99,5 @@ xpack.fleet.agentPolicies:
         package:
           name: system
 
-# # Maps settings
-# map.includeElasticMapsService: ${USE_DEFAULT_MAPS}
-# map.emsUrl: "${CUSTOM_MAPS_SERVICE_URL}"
+# logging.root.level: debug
       
