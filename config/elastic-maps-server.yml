@@ -1,18 +1,19 @@
 # Elasticsearch 
-elasticsearch:
-  host: "https://${DOCKER_HOST_IP}:${ES_PORT}"  
-  username: "elastic"                           
-  password: "${ELASTIC_PASSWORD}"               
+# elasticsearch:
+#   host: "https://${DOCKER_HOST_IP}:${ES_PORT}"  
+#   username: "elastic"                           
+#   password: "${ELASTIC_PASSWORD}"               
 
-  ssl:
-    certificateAuthorities: ["/certs/ca/ca.crt"] 
-    certificate: "/certs/elastic-certificates.crt" 
-    key: "/certs/elastic-certificates.key"         
-    keyPassphrase: ""                              
-    verificationMode: "full"                       
+#   ssl:
+#     certificateAuthorities: ["/certs/ca/ca.crt"] 
+#     certificate: "/certs/elastic-certificates.crt" 
+#     key: "/certs/elastic-certificates.key"         
+#     keyPassphrase: ""                              
+#     verificationMode: "full"                       
 # General settings
-host: "${DOCKER_HOST_IP}"          
-port: ${EPR_PORT}                 
+#host: "${DOCKER_HOST_IP}"          
+#port: ${CUSTOM_MAPS_SERVICE_PORT}  
+#port: 8080               
 basePath: "/maps"                  
 ui: true                           
 

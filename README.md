@@ -24,6 +24,10 @@ The `air-gapped.yml` adds to the base configuration provided by the `docker-comp
 
 The `examples.yml` adds different functionality to the base configuration by bringing online different containers using docker's [profiles](#profiles) feature. (see below).  This file is included at the top of the `docker-compose.yml`.
 
+The `stack-setup.yml` contains the code for the service that initially configures the Elastic stack and builds the certs for TLS encryption.
+
+The `elastic-stack.yml` contains the basic configuration for core Elastic components (Elasticsearch, Kibana, and Agent).  These components are insturmented in the other compose files using the `extends` functionality of Docker Compose.
+
 #### docker-compose.yml
 - Elasticsearch (`es01`, `es02`, `es03`)
 - Kibana (`kibana`) - accessible through https://localhost:5601/
