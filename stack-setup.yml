@@ -66,7 +66,6 @@ services:
           "  - name: ems-server\n"\
           "    dns:\n"\
           "      - ems-server\n"\
-          "      - elastic-maps-server\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\

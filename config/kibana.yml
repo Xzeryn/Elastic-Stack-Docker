@@ -2,7 +2,7 @@ elastic:
   apm:
     active: true
     # serverUrl: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
-    serverUrl: "http://localhost:8200"
+    serverUrl: "http://${DOCKER_HOST_IP}:8200"
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
     environment: Elastic_Stack
 server.host: "0.0.0.0"
@@ -82,8 +82,16 @@ xpack.fleet.agentPolicies:
             vars:
               - name: host
                 value: 0.0.0.0:8200
+              # - name: url
+              #   value: https://fleet-server:8200
               - name: secret_token
                 value: ${ELASTIC_APM_SECRET_TOKEN}
+              # - name: tls_enabled
+              #   value: true
+              # - name: tls_certificate
+              #   value: /certs/fleet-server/fleet-server.crt
+              # - name: tls_key
+              #   value: /certs/fleet-server/fleet-server.key
   - name: Docker-Container-Policy
     id: docker-container-policy
     namespace: default
