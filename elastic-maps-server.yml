@@ -1,0 +1,49 @@
+volumes:
+  mapsdata01:
+    driver: local
+
+services:
+  kibana:
+    depends_on:
+      ems-server:
+        condition: service_healthy
+    environment:
+      #- MAP_INCLUDEELASTICMAPSERVICE=true
+      - MAP_EMSURL=https://localhost:8085
+  
+  ems-server:
+    depends_on:
+      es01:
+        condition: service_healthy                  
+    image: docker.elastic.co/elastic-maps-service/elastic-maps-server:${STACK_VERSION}-amd64
+    restart: always
+    #user: root
+    hostname: ems-server
+    ports:
+      - ${ELASTIC_MAPS_SERVICE_PORT}:8080
+    environment:
+      - ELASTICSEARCH_HOST=https://es01:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+    volumes:
+      - certs:/etc/ssl/certs:ro
+      - ./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml
+      # By default this is set to use a volume mount to ensure the initial maps are configured
+      # If you wish to have more detailed maps you can download them and put the contents in the
+      # `ems_data` directory and comment out the volume mount and uncomment the directory mount
+      - mapsdata01:/usr/src/app/data
+      # - ./ems_data:/usr/src/app/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert /etc/ssl/certs/ems-server/ems-server.crt https://ems-server:8080/status | grep -q 'All services are available'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+
+
+
+

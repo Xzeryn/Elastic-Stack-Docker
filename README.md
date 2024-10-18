@@ -22,7 +22,13 @@ The `docker-compose.yml` is the base configuration of the stack. It generates th
 
 The `air-gapped.yml` adds to the base configuration provided by the `docker-compose.yml` and provides the configuration changes and containers necessary to run the Elastic stack in an air-gapped environment.
 
+The `elastic-maps-server.yml` adds a self-hosted maps server to the base configuration provided by the `docker-compose.yml` and provides the configuration changes and containers necessary to integrate it with the Elastic stack.
+
 The `examples.yml` adds different functionality to the base configuration by bringing online different containers using docker's [profiles](#profiles) feature. (see below).  This file is included at the top of the `docker-compose.yml`.
+
+The `stack-setup.yml` contains the code for the service that initially configures the Elastic stack and builds the certs for TLS encryption.
+
+The `elastic-stack.yml` contains the basic configuration for core Elastic components (Elasticsearch, Kibana, and Agent).  These components are insturmented in the other compose files using the `extends` functionality of Docker Compose.
 
 #### docker-compose.yml
 - Elasticsearch (`es01`, `es02`, `es03`)
@@ -33,6 +39,10 @@ The `examples.yml` adds different functionality to the base configuration by bri
 #### air-gapped.yml
 - Elastic Package Registry (`epr`): Provides local copy of required elastic packages
 - Elastic Artifact Registry (`ear`): Provides local copy of elastic binaries for agent install
+
+##
+#### elastic-maps-server.yml
+- Elastic Maps Services (`ems-server`): Provides self-hosted maps service for the Elastic stack
 
 ##
 #### examples.yml
@@ -115,7 +125,27 @@ Profiles may also be used when using air-gapped.  Using the same metricbeat exam
 ```
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring up -d
 ```
+---
 
+## Running Self-hosted Elastic Maps Service
+
+The `elastic-maps-server.yml` configures the stack to utilize a self-hosted Elastic Maps Service (EMS) server.  This service would be required in an air-gapped environment where there is a use case to use maps in dashboards.
+
+Using the EMS configuration requires chaining multiple docker-compose files due to configuration changes that need to be made to the base configuration.  This is done using the `-f <filename>` flag when executing the `docker compose` command.
+
+#### Usage:
+To bring up the basic Elastic Maps Service stack (Elasticsearch, Kibana, Fleet/APM Server, EMS):
+```
+docker compose -f docker-compose.yml -f elastic-maps-server.yml up -d
+```
+To bring up the basic air-gapped stack with Elastic Maps Service (Elasticsearch, Kibana, Fleet/APM Server, EAR, and EPR):
+```
+docker compose -f docker-compose.yml -f air-gapped.yml -f elastic-maps-server.yml up -d
+```
+Profiles may also be used when using the Elastic Maps Service.  Using the same metricbeat example above, the command would be:
+```
+docker compose -f docker-compose.yml -f elastic-maps-server.yml --profile monitoring up -d
+```
 ---
 
 ## Bring down the stack

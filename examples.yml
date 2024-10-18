@@ -8,62 +8,33 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
-  mapsdata:
-    driver: local
 
 services:
   # The ml01 is configured to be a dedicated ML node within the cluster large enough to download and install the ELSER model
   ml01:
+    extends:
+      file: elastic-stack.yml
+      service: elasticsearch
     profiles:
       - ml
     depends_on:
       es01:
         condition: service_healthy
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    restart: always
-    labels:
-      co.elastic.logs/module: elasticsearch
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
       - mldata01:/usr/share/elasticsearch/data
-      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - ./config/es-docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
     environment:
       - node.name=ml01
       - node.roles=ml, remote_cluster_client
-      - cluster.name=${CLUSTER_NAME}
       - discovery.seed_hosts=es01
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
       - xpack.security.http.ssl.key=certs/ml01/ml01.key
       - xpack.security.http.ssl.certificate=certs/ml01/ml01.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.key=certs/ml01/ml01.key
       - xpack.security.transport.ssl.certificate=certs/ml01/ml01.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${LICENSE}
-      - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
-      - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
-      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
-      - APMSERVER_PORT=${APMSERVER_PORT}
     mem_limit: ${ML_MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
 
   # Metricbeat is used for stack monitoring (Optional)
   metricbeat01:
@@ -210,18 +181,16 @@ services:
 
   # The container-agent is an example of insturmenting an agent within a docker container
   container-agent:
+    extends:
+      file: elastic-stack.yml
+      service: elastic-agent
     profiles:
       - agent
     depends_on:
       fleet-server:
         condition: service_healthy
     hostname: container-agent
-    image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
-    restart: always
     volumes:
-      - certs:/certs
-      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./agent_ingest_data:/tmp/ingest_data"
       # The following line is not required, nor is the `entrypoint` line. They are running a script to add 
       # integrations to the Fleet policy this agent connects to for demo functionality
@@ -230,55 +199,11 @@ services:
     ports:
       - ${AGENT_SYSLOG_UDP_PORT}:9003
       - ${AGENT_SYSLOG_TCP_PORT}:9004
-    user: root
     environment:
-      - SSL_CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
-      - CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
-      - FLEET_CA=/certs/ca/ca.crt
-      - FLEET_ENROLL=1
-      - FLEET_URL=https://fleet-server:8220
-      - KIBANA_HOST=https://kibana:5601
-      - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
-      - KIBANA_FLEET_CA=/certs/ca/ca.crt
       - FLEET_TOKEN_POLICY_NAME=Docker-Container-Policy
       - INTEGRATION_LOGS_VERSION=${INTEGRATION_LOGS_VERSION}
       - INTEGRATION_TCP_LOGS_VERSION=${INTEGRATION_TCP_LOGS_VERSION}
       - INTEGRATION_UDP_LOGS_VERSION=${INTEGRATION_UDP_LOGS_VERSION}
-    healthcheck:
-      test:
-        [ 
-          "CMD-SHELL", 
-          "curl -s --cacert /certs/ca/ca.crt https://fleet-server:8220/api/status | grep HEALTHY 2>&1 >/dev/null",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
- 
-  maps:
-    profiles:
-      - maps                   
-    image: docker.elastic.co/elastic-maps-service/elastic-maps-server:${STACK_VERSION}
-    container_name: maps
-    restart: always
-    ports:
-      - ${CUSTOM_MAPS_SERVICE_PORT}:8080
-    environment:
-      - elasticsearch.host=https://es01:9200
-      - elasticsearch.username=elastic
-      - elasticsearch.password=${ELASTIC_PASSWORD}
-      - elasticsearch.ssl.verificationMode=certificate
-      - elasticsearch.ssl.certificateAuthorities=/usr/src/app/server/certs/ca.crt
-      - "./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml"
-      - "./mapsdata:/usr/src/app/data"
-    volumes:
-      - certs:/usr/src/app/server/certs
-      - ./config/elastic-maps-server.yml:/usr/src/app/server/config/elastic-maps-server.yml
-      - ./maps/planet.mbtiles:/usr/src/app/data/planet.mbtiles
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f -L http://localhost:8080/status"]
-      interval: 10s
-      timeout: 10s
-      retries: 120
 
 
       
