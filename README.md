@@ -2,7 +2,7 @@
 
 This project creates a full Elastic stack in docker using `docker compose`.
 
-It is based heavily on the work done by elkninja and adds local copies of the Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) containers for air-gapped environments.  
+It is based heavily on the work done by elkninja and adds local copies of the Elastic Package Registry (EPR) and Elastic Artifact Registry (EAR) (including the Elastic Defend integration policy artifacts) containers for air-gapped environments.  
 
 **WARNING:** The Elastic Package Registry image is ~15G and the Elastic Artifact Registry is ~4G in size.  
 
@@ -125,6 +125,11 @@ Profiles may also be used when using air-gapped.  Using the same metricbeat exam
 ```
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring up -d
 ```
+
+If using the Elastic Defend integration in the air-gapped configuration, you will need to configure the advanced settings of the Elastic Defend integration to point to the EAR server.  The artifacts are built into the server in under: `<url>/downloads/endpoint/`
+
+Please reference this article for integration settings required for Elastic Defend in an air-gapped environment: https://www.elastic.co/guide/en/security/current/offline-endpoint.html
+
 ---
 
 ## Running Self-hosted Elastic Maps Service
