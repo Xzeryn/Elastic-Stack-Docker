@@ -93,7 +93,7 @@ Multiple profiles can also be chained together.
 The following command enables Metricbeat, Logstash and an APM example.
 
 ```
-docker compose --profile monitoring --profile logstash --profile apm up -d
+docker compose --profile monitoring --profile logstash --profile apm  --profile kafka up -d
 ```
 
 **NOTE:** _You can view the configuration that docker compose will apply prior to starting the project by using the `config` parameter instead of `up -d`._ 
@@ -218,6 +218,15 @@ Usage Examples:
 - Configures logstash in the cluster to ingest data from the `logstash_ingest_data` folder
 - Edit the `logstash.conf` file to try out different ingest pipelines
 - Use `--profile logstash` in your docker compose startup command to enable
+
+**Kafka**
+- Integrates Kafka and Zookeeper services into the Elastic Stack.
+- Enables real-time data streaming and buffering between data sources and Elasticsearch via Logstash.
+- Configures logstash_in  in the cluster to ingest data from the `logstash_ingest_data` folder
+- Configures logstash_out in the cluster to read data from kafka.
+- Edit the `logstash_in.conf` file to try out different ingest pipelines.
+- Edit the `logstash_out.conf` file to try out different ingest pipelines.
+- Use `--profile kafka` in your docker compose startup command to enable.
 
 **APM** 
 - Configures sample web application in the cluster that is insturmented with the elastic APM agent
