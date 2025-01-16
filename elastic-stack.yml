@@ -47,9 +47,13 @@ services:
     volumes:
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
-      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml:rw
+      - ./config/kibana-output-config-entrypoint.sh:/usr/local/bin/kibana-startup.sh:ro
+    entrypoint: ["kibana-startup.sh"]
     environment:
       - SERVERNAME=kibana
+      - ES_CACERT=unset
+      - ES_CAFINGERPRINT=unset
       - ELASTICSEARCH_HOSTS=https://es01:9200
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
