@@ -23,10 +23,12 @@ xpack.fleet.outputs:
     name: External Elasticsearch Output
     type: elasticsearch
     hosts: ["https://${DOCKER_HOST_IP}:${ES_PORT}"]
+    ca_trusted_fingerprint: ${ES_CAFINGERPRINT}
     is_default: true
     is_default_monitoring: true
     config:
-      ssl.certificate_authorities: ["/certs/ca/ca.crt"]
+      ssl.certificate_authorities: ["${ES_CACERT}"]
+
   # Uncomment to enable multiple outputs - requires Platinum or above license
   # - id: interal_docker_elasticsearch_output
   #   name: Interal Docker Elasticsearch Output
@@ -34,6 +36,7 @@ xpack.fleet.outputs:
   #   hosts: ["https://es01:9200"]
   #   config:
   #     ssl.certificate_authorities: ["/certs/ca/ca.crt"]
+
 
 xpack.fleet.packages:
   - name: fleet_server
