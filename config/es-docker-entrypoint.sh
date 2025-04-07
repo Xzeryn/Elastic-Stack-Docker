@@ -47,6 +47,11 @@ if [[ -f bin/elasticsearch-users ]]; then
         (echo "$ELASTIC_PASSWORD" | elasticsearch-keystore add -x 'bootstrap.password')
         # Added Secret Token for Elasticsearch AMP 
         (echo "$ELASTIC_APM_SECRET_TOKEN" | elasticsearch-keystore add -x 'telemetry.secret_token')
+        # Added Access Key and Secret Key for MinIO S3
+        if [[ -n "$MINIO_ACCESS_KEY" ]]; then
+          (echo "$MINIO_ACCESS_KEY" | elasticsearch-keystore add -x 's3.client.default.access_key')
+          (echo "$MINIO_SECRET_KEY" | elasticsearch-keystore add -x 's3.client.default.secret_key')
+        fi
       fi
     else
       # keystore requires password
@@ -57,6 +62,11 @@ if [[ -f bin/elasticsearch-users ]]; then
         # Added Secret Token for Elasticsearch AMP 
         COMMANDS2="$(printf "%s\n%s" "$KEYSTORE_PASSWORD" "$ELASTIC_APM_SECRET_TOKEN")"
         (echo "$COMMANDS" | elasticsearch-keystore add -x 'telemetry.secret_token')
+        # Added Access Key and Secret Key for MinIO S3
+        if [[ -n "$MINIO_ACCESS_KEY" ]]; then
+          (echo "$MINIO_ACCESS_KEY" | elasticsearch-keystore add -x 's3.client.default.access_key')
+          (echo "$MINIO_SECRET_KEY" | elasticsearch-keystore add -x 's3.client.default.secret_key')
+        fi
       fi
     fi
   fi

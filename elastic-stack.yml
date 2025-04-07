@@ -24,6 +24,8 @@ services:
       - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
       - APMSERVER_PORT=${APMSERVER_PORT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     mem_limit: ${ES_MEM_LIMIT}
     ulimits:
       memlock:

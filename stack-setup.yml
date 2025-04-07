@@ -49,6 +49,13 @@ services:
           "    ip:\n"\
           "      - 127.0.0.1\n"\
           "      - ${DOCKER_HOST_IP}\n"\
+          "  - name: fz01\n"\
+          "    dns:\n"\
+          "      - fz01\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "      - ${DOCKER_HOST_IP}\n"\
           "  - name: kibana\n"\
           "    dns:\n"\
           "      - kibana\n"\
