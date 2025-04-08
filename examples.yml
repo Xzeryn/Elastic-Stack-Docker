@@ -52,17 +52,14 @@ services:
       - fzdata01:/usr/share/elasticsearch/data
     environment:
       - node.name=fz01
-      - node.roles=data_frozen, remote_cluster_client
+      - node.roles=data_frozen
       - discovery.seed_hosts=es01
       - xpack.security.http.ssl.key=certs/fz01/fz01.key
       - xpack.security.http.ssl.certificate=certs/fz01/fz01.crt
       - xpack.security.transport.ssl.key=certs/fz01/fz01.key
       - xpack.security.transport.ssl.certificate=certs/fz01/fz01.crt
+      - xpack.searchable.snapshot.shared_cache.size=${SNAPSHOT_SHARED_CACHE_SIZE}
     mem_limit: ${FZ_MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
 
   # Metricbeat is used for stack monitoring (Optional)
   metricbeat01:

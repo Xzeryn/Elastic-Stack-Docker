@@ -8,9 +8,62 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    command: server /data --console-address ":${MINIO_GUI_PORT}"
+    command: server /data --console-address ":9001"
     volumes:
       - minio-data:/data
 
+  minio-mc:
+    image: minio/mc:latest
+    container_name: minio-mc
+    depends_on:
+      - minio
+    environment:
+      MC_HOSTS: minio=http://minio:9000
+      MC_ALIAS: minio
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+    entrypoint: >
+      sh -c "
+        sleep 5;
+        mc config host rm local;
+        mc config host add local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+        mc mb local/${MINIO_BUCKET_NAME};
+        echo '
+        {
+          \"Version\": \"2012-10-17\",
+          \"Statement\": [
+            {
+              \"Effect\": \"Allow\",
+              \"Action\": [
+                  \"s3:ListBucket\"
+              ],
+              \"Resource\": [
+                  \"arn:aws:s3:::'${MINIO_BUCKET_NAME}'\"
+              ]
+            },
+            {
+              \"Effect\": \"Allow\",
+              \"Action\": [
+                  \"s3:*Object\"
+              ],
+              \"Resource\": [
+                  \"arn:aws:s3:::'${MINIO_BUCKET_NAME}'/*\"
+              ]
+            }
+          ]
+        }' > /tmp/elastic-bucket-policy.json;
+        mc admin policy create local elastic-s3 /tmp/elastic-bucket-policy.json;
+        mc policy set elastic-s3 local/${MINIO_BUCKET_NAME};
+        mc admin user add local ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+        mc admin policy attach local elastic-s3 --user ${MINIO_ACCESS_KEY};
+        mc ls local;
+        echo "MinIO operations completed.";
+      "
+
 volumes:
   minio-data:
+    driver: local
+
+networks:
+  default:
+    name: elastic
+    external: false
