@@ -41,6 +41,7 @@ services:
       - esdata01:/usr/share/elasticsearch/data
     environment:
       - node.name=es01
+      - node.roles=data_content, data_hot, data_warm, data_cold, ingest, master, remote_cluster_client, transform
       - discovery.seed_hosts=es02,es03
       - xpack.security.http.ssl.key=certs/es01/es01.key
       - xpack.security.http.ssl.certificate=certs/es01/es01.crt
@@ -58,6 +59,7 @@ services:
       - esdata02:/usr/share/elasticsearch/data
     environment:
       - node.name=es02
+      - node.roles=data_content, data_hot, data_warm, data_cold, ingest, master, remote_cluster_client, transform
       - discovery.seed_hosts=es01,es03
       - xpack.security.http.ssl.key=certs/es02/es02.key
       - xpack.security.http.ssl.certificate=certs/es02/es02.crt
@@ -75,6 +77,7 @@ services:
       - esdata03:/usr/share/elasticsearch/data
     environment:
       - node.name=es03
+      - node.roles=data_content, data_hot, data_warm, data_cold, ingest, master, remote_cluster_client, transform
       - discovery.seed_hosts=es01,es02
       - xpack.security.http.ssl.key=certs/es03/es03.key
       - xpack.security.http.ssl.certificate=certs/es03/es03.crt

@@ -31,22 +31,29 @@ The `stack-setup.yml` contains the code for the service that initially configure
 The `elastic-stack.yml` contains the basic configuration for core Elastic components (Elasticsearch, Kibana, and Agent).  These components are insturmented in the other compose files using the `extends` functionality of Docker Compose.
 
 #### docker-compose.yml
+
 - Elasticsearch (`es01`, `es02`, `es03`)
 - Kibana (`kibana`) - accessible through https://localhost:5601/
 - Fleet Server (`fleet-server`): Provides fleet and apm server functions
 
 ##
 #### air-gapped.yml
+
 - Elastic Package Registry (`epr`): Provides local copy of required elastic packages
 - Elastic Artifact Registry (`ear`): Provides local copy of elastic binaries for agent install
 
 ##
 #### elastic-maps-server.yml
+
 - Elastic Maps Services (`ems-server`): Provides self-hosted maps service for the Elastic stack
 
 ##
 #### examples.yml
+
 - Machine Learning Node (`ml01`): Provides a dediated machine learning node to the cluster (default size is 8GB ram to allow for install of ELSER model)
+- Frozen Tier Node (`fz01`): Provides a dedicated Frozen Tier storage node that connects to the MinIO container
+- MinIO (`minio`): Provides a S3 storage container to be used with Frozen Tier searchable snapshots
+- MinIO-Setup (`minio-setup`): Configures MinIO based on values in .env file
 - Metricbeat (`metricbeat01`): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
 - Filebeat (`filebeat01`): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
@@ -202,7 +209,12 @@ Usage Examples:
 - Default configuration is set to 8GB of RAM to allow for the install of the ELSER model
 - The amount of memory can be changed by editing the `ML_MEM_LIMIT` variable in the `.env` file
 - Functionality is limited unless you enable the _trial_ or provide a _license_
-- User `--profile ml` in your docker compose startup command to enable
+- Use `--profile ml` in your docker compose startup command to enable
+
+**Frozen Tier & Searable Snapshots**
+- Configures and adds a dedicated frozen node to the Elastic Stack
+- Configures and adds a MinIO S3 container, and configures the Elastic stack to use it
+- Use `--profile frozen` in your docker compose startup command to enable
 
 **Monitoring** 
 - Configures metricbeat in the cluster and performs monitoring of the Elastic stack

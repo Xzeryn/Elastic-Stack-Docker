@@ -2,6 +2,10 @@
 volumes:
   mldata01:
     driver: local
+  fzdata01:
+    driver: local
+  minio-data:
+    driver: local
   metricbeatdata01:
     driver: local
   filebeatdata01:
@@ -35,6 +39,112 @@ services:
       memlock:
         soft: -1
         hard: -1
+
+  # The fz01 is configured to be a dedicated Frozen node within the cluster
+  fz01:
+    extends:
+      file: elastic-stack.yml
+      service: elasticsearch
+    profiles:
+      - frozen
+    depends_on:
+      es01:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    volumes:
+      - fzdata01:/usr/share/elasticsearch/data
+      - ./config/es-frozen_node-startup.sh:/usr/local/bin/es-frozen_node-startup.sh:ro
+    entrypoint: ["es-frozen_node-startup.sh"]
+    environment:
+      - node.name=fz01
+      - node.roles=data_frozen
+      - discovery.seed_hosts=es01
+      - xpack.security.http.ssl.key=certs/fz01/fz01.key
+      - xpack.security.http.ssl.certificate=certs/fz01/fz01.crt
+      - xpack.security.transport.ssl.key=certs/fz01/fz01.key
+      - xpack.security.transport.ssl.certificate=certs/fz01/fz01.crt
+      - xpack.searchable.snapshot.shared_cache.size=${SNAPSHOT_SHARED_CACHE_SIZE}
+    mem_limit: ${FZ_MEM_LIMIT}
+
+  # The minio service is used to store the frozen snapshots. It is configured to be a standalone service
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    profiles:
+      - frozen
+    ports:
+      - ${MINIO_API_PORT}:9000
+      - ${MINIO_GUI_PORT}:9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:9000/minio/health/live",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  # The minio-setup service is used to configure the minio service.
+  minio-setup:
+    image: minio/mc:latest
+    container_name: minio-setup
+    profiles:
+      - frozen
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MC_HOSTS: minio=http://minio:9000
+      MC_ALIAS: minio
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+    entrypoint: >
+      sh -c "
+        sleep 5;
+        mc config host rm local;
+        mc config host add local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+        mc mb local/${MINIO_BUCKET_NAME};
+        echo '
+        {
+          \"Version\": \"2012-10-17\",
+          \"Statement\": [
+            {
+              \"Effect\": \"Allow\",
+              \"Action\": [
+                  \"s3:ListBucket\"
+              ],
+              \"Resource\": [
+                  \"arn:aws:s3:::'${MINIO_BUCKET_NAME}'\"
+              ]
+            },
+            {
+              \"Effect\": \"Allow\",
+              \"Action\": [
+                  \"s3:*Object\"
+              ],
+              \"Resource\": [
+                  \"arn:aws:s3:::'${MINIO_BUCKET_NAME}'/*\"
+              ]
+            }
+          ]
+        }' > /tmp/elastic-bucket-policy.json;
+        mc admin policy create local elastic-s3 /tmp/elastic-bucket-policy.json;
+        mc policy set elastic-s3 local/${MINIO_BUCKET_NAME};
+        mc admin user add local ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+        mc admin policy attach local elastic-s3 --user ${MINIO_ACCESS_KEY};
+        mc ls local;
+        echo 'MinIO operations completed.';
+        # while true; do sleep 30; done;
+      "
 
   # Metricbeat is used for stack monitoring (Optional)
   metricbeat01:
