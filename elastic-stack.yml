@@ -20,6 +20,7 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+      - xpack.ml.use_auto_machine_memory_percent=true
       - ELASTIC_APM_SECRET_TOKEN=${ELASTIC_APM_SECRET_TOKEN}
       - ELASTIC_APM_ENVIRONMENT=${STACK_APM_ENVIRONMENT}
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
@@ -80,14 +81,16 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -I -s --cacert config/certs/ca/ca.crt https://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+          #"curl -f --cacert config/certs/ca/ca.crt https://localhost:5601/api/status",
+          "curl -I -s --cacert config/certs/ca/ca.crt https://localhost:5601/api/status | head -n 1 | grep 200",
         ]
       interval: 10s
       timeout: 10s
       retries: 120
 
   elastic-agent:
-    image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+    # image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
+    image: docker.elastic.co/elastic-agent/elastic-agent:${STACK_VERSION}
     restart: always
     volumes:
       - certs:/certs
