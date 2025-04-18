@@ -57,6 +57,10 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 - Metricbeat (`metricbeat01`): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
 - Filebeat (`filebeat01`): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
+- Kafka (`kafka01`): Provides a message broker for buffering and routing data between components in the stack
+- Zookeeper (`zookeeper`): Required service that manages Kafka node coordination and metadata
+- Logstash Input (`logstash_in`): Specialized Logstash instance that reads data from the /logstash_ingest_data/ folder and publishes to Kafka topic
+- Logstash Output (`logstash_out`): Specialized Logstash instance that consumes data from Kafka and indexes it into Elasticsearch
 - Web App (`webapp`): Demo web application that allows triggering of errors visible in the APM section of Kibana
 - Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations.  It provides the ability to ingest files into the cluster through the `/agent_ingest_data/` folder, as well as through UDP port `9003` and TCP port `9004`. 
 
@@ -100,7 +104,7 @@ Multiple profiles can also be chained together.
 The following command enables Metricbeat, Logstash and an APM example.
 
 ```
-docker compose --profile monitoring --profile logstash --profile apm up -d
+docker compose --profile monitoring --profile logstash --profile apm  --profile kafka up -d
 ```
 
 **NOTE:** _You can view the configuration that docker compose will apply prior to starting the project by using the `config` parameter instead of `up -d`._ 
@@ -230,6 +234,15 @@ Usage Examples:
 - Configures logstash in the cluster to ingest data from the `logstash_ingest_data` folder
 - Edit the `logstash.conf` file to try out different ingest pipelines
 - Use `--profile logstash` in your docker compose startup command to enable
+
+**Kafka**
+- Integrates Kafka and Zookeeper services into the Elastic Stack.
+- Enables real-time data streaming and buffering between data sources and Elasticsearch via Logstash.
+- Configures logstash_in  in the cluster to ingest data from the `logstash_ingest_data` folder
+- Configures logstash_out in the cluster to read data from kafka.
+- Edit the `logstash_in.conf` file to try out different ingest pipelines.
+- Edit the `logstash_out.conf` file to try out different ingest pipelines.
+- Use `--profile kafka` in your docker compose startup command to enable.
 
 **APM** 
 - Configures sample web application in the cluster that is insturmented with the elastic APM agent
