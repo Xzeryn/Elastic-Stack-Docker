@@ -6,7 +6,7 @@ elastic:
     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
     environment: Elastic_Stack
 server.host: "0.0.0.0"
-telemetry.enabled: "true"
+telemetry.enabled: "false"
 
 xpack.fleet.fleetServerHosts:
   - id: external_fleet_server
