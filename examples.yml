@@ -335,7 +335,7 @@ services:
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
     container_name: logstash_in
     restart: always
-    user: root
+    user: logstash
     volumes:
       - logstashdata02:/usr/share/logstash/data
       - "./config/logstash_in.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
@@ -366,7 +366,7 @@ services:
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
     container_name: logstash_out
     restart: always
-    user: root
+    user: logstash
     volumes:
       - certs:/usr/share/logstash/certs
       - logstashdata03:/usr/share/logstash/data
