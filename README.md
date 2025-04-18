@@ -57,6 +57,10 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 - Metricbeat (`metricbeat01`): Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
 - Filebeat (`filebeat01`): Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
+- Kafka (`kafka01`): Provides a message broker for buffering and routing data between components in the stack
+- Zookeeper (`zookeeper`): Required service that manages Kafka node coordination and metadata
+- Logstash Input (`logstash_in`): Specialized Logstash instance that reads data from the /logstash_ingest_data/ folder and publishes to Kafka topic
+- Logstash Output (`logstash_out`): Specialized Logstash instance that consumes data from Kafka and indexes it into Elasticsearch
 - Web App (`webapp`): Demo web application that allows triggering of errors visible in the APM section of Kibana
 - Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations.  It provides the ability to ingest files into the cluster through the `/agent_ingest_data/` folder, as well as through UDP port `9003` and TCP port `9004`. 
 
