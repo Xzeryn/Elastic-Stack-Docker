@@ -59,6 +59,7 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 - Logstash (`logstash01`): Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
 - Web App (`webapp`): Demo web application that allows triggering of errors visible in the APM section of Kibana
 - Elastic Agent Container (`container-agent`): Demo elastic agent container to test integrations.  It provides the ability to ingest files into the cluster through the `/agent_ingest_data/` folder, as well as through UDP port `9003` and TCP port `9004`. 
+- Elastic MCP Server (`elastic-mcp-server`): Provides a MCP server configured as streamable-HTTP to communicate with the Elastic cluster. 
 
 ---
 
@@ -234,8 +235,15 @@ Usage Examples:
 **APM** 
 - Configures sample web application in the cluster that is insturmented with the elastic APM agent
 - The webapp allows for the generation of error and messages that can be seen in the Kibana APM section
-- Access the webapp through http://localhost:8000
+- Access the webapp through `http://localhost:8000`
 - Use `--profile apm` in your docker compose startup command to enable
+
+**Elastic MCP Server**
+- Configures the Elastic MCP Server (experimental) as streamable-HTTP and connects it to the Elastic cluster.
+- Implementation of the MCP Server can be followed on its [GitHub Repo](https://github.com/elastic/mcp-server-elasticsearch)
+- The MCP configuration follows this [blog post](https://www.elastic.co/search-labs/blog/model-context-protocol-elasticsearch) you can use as a reference.
+- MCP server endpoint is available at `http://localhost:8090/mcp`
+- Use `--profile mcp` in your docker compose startup command to enable
 
 **Agent** 
 - Configures an Elastic Agent container in the cluster registered in Fleet with 3 custom log integrations enabled
