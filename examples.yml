@@ -314,7 +314,7 @@ services:
       - INTEGRATION_TCP_LOGS_VERSION=${INTEGRATION_TCP_LOGS_VERSION}
       - INTEGRATION_UDP_LOGS_VERSION=${INTEGRATION_UDP_LOGS_VERSION}
 
-  # The container-agent is an example of insturmenting an agent within a docker container
+  # Tthe Elastic MCP Server allows LLM Clients to communicate with the Elastic cluster using streamable-HTTP protocol
   elastic-mcp-server:
     image: docker.elastic.co/mcp/elasticsearch:latest
     container_name: elastic-mcp-server

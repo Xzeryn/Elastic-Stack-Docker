@@ -233,7 +233,8 @@ Usage Examples:
 - Use `--profile logstash` in your docker compose startup command to enable
 
 **APM** 
-- Configures sample web application in the cluster that is insturmented with the elastic APM agent
+
+- Configures sample web application in the cluster that is instrumented with the elastic APM agent
 - The webapp allows for the generation of error and messages that can be seen in the Kibana APM section
 - Access the webapp through `http://localhost:8000`
 - Use `--profile apm` in your docker compose startup command to enable
