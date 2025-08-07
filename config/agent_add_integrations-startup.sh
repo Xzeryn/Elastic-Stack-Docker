@@ -1,33 +1,31 @@
 #!/bin/bash
 
-# Add Custom Logs integration to Fleet Policy through Kibana API
+# Add Custom Logs (Filestream) integration to Fleet Policy through Kibana API
 curl --cacert /certs/ca/ca.crt -u elastic:${KIBANA_FLEET_PASSWORD} -X POST "${KIBANA_HOST}/api/fleet/package_policies" \
 -H "kbn-xsrf: true" \
 -H "Content-Type: application/json" \
 -d '{
   "policy_id": "docker-container-policy",
   "package": {
-    "name": "log",
-    "version": "'"$INTEGRATION_LOGS_VERSION"'"
+    "name": "filestream",
+    "version": "'"$INTEGRATION_FILESTREAM_VERSION"'"
   },
-  "name": "log-docker_agent",
+  "name": "filestream-docker_agent",
   "description": "",
   "namespace": "",
   "inputs": {
-    "logs-logfile": {
+    "filestream-filestream": {
       "enabled": true,
       "streams": {
-        "log.logs": {
+        "filestream.generic": {
           "enabled": true,
           "vars": {
             "paths": [
               "/tmp/ingest_data/*"
             ],
-            "exclude_files": [],
-            "ignore_older": "72h",
-            "data_stream.dataset": "generic",
-            "tags": [],
-            "custom": ""
+            "clean_inactive": "-1",
+            "data_stream.dataset": "filestream.generic",
+            "tags": []
           }
         }
       }
@@ -52,7 +50,7 @@ curl --cacert /certs/ca/ca.crt -u elastic:${KIBANA_FLEET_PASSWORD} -X POST "${KI
     "tcp-tcp": {
       "enabled": true,
       "streams": {
-        "tcp.generic": {
+        "tcp.tcp": {
           "enabled": true,
           "vars": {
             "listen_address": "localhost",
@@ -60,8 +58,6 @@ curl --cacert /certs/ca/ca.crt -u elastic:${KIBANA_FLEET_PASSWORD} -X POST "${KI
             "data_stream.dataset": "tcp.generic",
             "tags": [],
             "syslog": true,
-            "syslog_options": "field: message\n#format: auto\n#timezone: Local\n",
-            "ssl": "#certificate: |\n#    -----BEGIN CERTIFICATE-----\n#    ...\n#    -----END CERTIFICATE-----\n#key: |\n#    -----BEGIN PRIVATE KEY-----\n#    ...\n#    -----END PRIVATE KEY-----\n",
             "custom": ""
           }
         }
@@ -87,7 +83,7 @@ curl --cacert /certs/ca/ca.crt -u elastic:${KIBANA_FLEET_PASSWORD} -X POST "${KI
     "udp-udp": {
       "enabled": true,
       "streams": {
-        "udp.generic": {
+        "udp.udp": {
           "enabled": true,
           "vars": {
             "listen_address": "localhost",
@@ -97,7 +93,6 @@ curl --cacert /certs/ca/ca.crt -u elastic:${KIBANA_FLEET_PASSWORD} -X POST "${KI
             "keep_null": false,
             "tags": [],
             "syslog": true,
-            "syslog_options": "field: message\n#format: auto\n#timezone: Local\n",
             "custom": ""
           }
         }
