@@ -1,4 +1,13 @@
 server.host: "0.0.0.0"
+## elastic.apm is deprecated in 8.18.0 and 9.0.0
+# elastic:
+#   apm:
+#     active: true
+#     # serverUrl: "http://${DOCKER_HOST_IP}:${APMSERVER_PORT}"
+#     serverUrl: "http://${DOCKER_HOST_IP}:8200"
+#     secretToken: ${ELASTIC_APM_SECRET_TOKEN}
+#     environment: Elastic_Stack
+# telemetry.enabled: "false"
 telemetry.optIn: false
 
 xpack.fleet.fleetServerHosts:
