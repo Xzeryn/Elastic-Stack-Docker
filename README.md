@@ -48,6 +48,7 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 ### Core Services
 
 #### 1. Elasticsearch Cluster (`es01`, `es02`, `es03`)
+
 - **Purpose**: Distributed search and analytics engine
 - **Configuration**: 3-node cluster with master, data, ingest, and transform capabilities
 - **Security**: TLS/SSL encryption, X-Pack security enabled
@@ -59,6 +60,7 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 - **Access**: Preconfigured and instrumented with APM
 
 #### 2. Kibana
+
 - **Purpose**: Web interface for data visualization and management
 - **Features**: 
   - Fleet management for Elastic Agents
@@ -68,6 +70,7 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 - **Access**: https://localhost:5601/ (preconfigured and instrumented with APM)
 
 #### 3. Fleet Server (`fleet-server`)
+
 - **Purpose**: Centralized agent management and communication hub
 - **Features**:
   - Agent enrollment and policy management
@@ -77,6 +80,7 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 - **Functionality**: Provides fleet and APM server functions
 
 #### 4. Elastic Agent
+
 - **Purpose**: Unified data collection and shipping
 - **Capabilities**:
   - Docker container monitoring
@@ -89,6 +93,7 @@ The `elastic-stack.yml` contains the basic configuration for core Elastic compon
 Profiles are enabled to configure different services for demo/example purposes. To use a profile add `--profile <name>` to the docker compose command. Each profile enabled must have its own `--profile <name>`, you cannot use a list of comma separated profile names.
 
 #### Machine Learning Profile (`--profile ml`)
+
 - **ml01**: Dedicated machine learning node to the Elastic Stack
 - **Configuration**: Default configuration is set to 8GB of RAM to allow for the install of the ELSER model
 - **Memory**: The amount of memory can be changed by editing the `ML_MEM_LIMIT` variable in the `.env` file
@@ -96,31 +101,37 @@ Profiles are enabled to configure different services for demo/example purposes. 
 - **Use Case**: Training and running ML models, ELSER model support
 
 #### Frozen Tier & Searchable Snapshots Profile (`--profile frozen`)
+
 - **fz01**: Dedicated frozen node to the Elastic Stack
 - **minio**: S3 storage container to be used with Frozen Tier searchable snapshots
 - **minio-setup**: Configures MinIO based on values in .env file
 - **Use Case**: Cost-effective long-term data retention, searchable snapshots
 
 #### Monitoring Profile (`--profile monitoring`)
+
 - **metricbeat01**: Provides stack monitoring in Kibana for Elasticsearch, Kibana, Logstash and Docker
 - **Use Case**: Infrastructure monitoring, performance metrics, cluster health
 
 #### Filebeat Profile (`--profile filebeat`)
+
 - **filebeat01**: Provides the ability to ingest .log files into the cluster through the `/filebeat_ingest_data/` folder
 - **Features**: Filebeat is also configured to pull logs for all docker containers (visible in the Kibana Logs Stream viewer)
 - **Use Case**: Application log collection, Docker container logs
 
 #### Logstash Profile (`--profile logstash`)
+
 - **logstash01**: Provides the ability to test logstash and ingest data into the cluster through the `/logstash_ingest_data/` folder
 - **Configuration**: Edit the `logstash.conf` file to try out different ingest pipelines
 - **Use Case**: Complex log parsing, data enrichment, custom processing pipelines
 
 #### APM Profile (`--profile apm`)
+
 - **webapp**: Demo web application that allows triggering of errors visible in the APM section of Kibana
 - **Access**: Access the webapp through `http://localhost:8000`
 - **Use Case**: Application performance monitoring, APM testing and demonstration
 
 #### Agent Profile (`--profile agent`)
+
 - **container-agent**: Demo elastic agent container to test integrations
 - **Features**: 
   - Provides the ability to ingest files into the cluster through the `/agent_ingest_data/` folder
@@ -133,6 +144,7 @@ Profiles are enabled to configure different services for demo/example purposes. 
   3. **Custom TCP Logs Integration**: Send logs over TCP to the docker host IP to the port designated in the `.env` file (default: `9004`). The integration has syslog parsing enabled by default. Changes can be made to the `logs-TCP.generic-*` ingest pipeline for additional formatting or to the settings of the integration.
 
 #### MCP Profile (`--profile mcp`)
+
 - **elastic-mcp-server**: Provides a MCP server configured as streamable-HTTP to communicate with the Elastic cluster
 - **Implementation**: Implementation of the MCP Server can be followed on its [GitHub Repo](https://github.com/elastic/mcp-server-elasticsearch)
 - **Configuration**: The MCP configuration follows this [blog post](https://www.elastic.co/search-labs/blog/model-context-protocol-elasticsearch) you can use as a reference
@@ -140,10 +152,12 @@ Profiles are enabled to configure different services for demo/example purposes. 
 - **Use Case**: AI/ML model integration, LLM client communication
 
 #### Elastic Maps Profile
+
 - **ems-server**: Elastic Maps Service for geographic data visualization
 - **Use Case**: Geospatial data analysis, map visualizations, self-hosted maps in air-gapped environments
 
 ### Air-Gapped Deployment
+
 - **epr**: Elastic Package Registry (`epr`) - Provides local copy of required elastic packages
 - **ear**: Elastic Artifact Registry (`ear`) - Provides local copy of elastic binaries for agent install
 - **Use Case**: Secure environments without internet access
@@ -156,13 +170,16 @@ Profiles are enabled to configure different services for demo/example purposes. 
 - **Docker Compose**: Version `2.20.3` or greater
 
 ### System Requirements
+
 - **Operating System**: Linux (WSL2 supported), macOS, Windows
 - **Memory**: Minimum 8GB RAM (16GB+ recommended)
 - **Storage**: At least 50GB available disk space
 - **Kernel Settings**: `vm.max_map_count` must be at least 262144
 
 ### Docker Compose Commands
+
 The project uses Docker Compose v2 syntax:
+
 ```bash
 # Check Docker Compose version
 docker compose version
@@ -175,6 +192,7 @@ docker compose logs           # View service logs
 ```
 
 ### Required Environment Variables
+
 Create a `.env` file based on `env.template` with the following essential variables:
 
 ```bash
@@ -212,6 +230,7 @@ Initially, internet access is required to build and pull the images. The images 
 ## Quick Start
 
 ### 1. Basic Setup
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -228,6 +247,7 @@ docker compose up -d
 ```
 
 ### 2. Access the Stack
+
 - **Elasticsearch**: https://localhost:9200
 - **Kibana**: https://localhost:5601
 - **Fleet Server**: https://localhost:8220
@@ -239,53 +259,69 @@ docker compose up -d
 The stack can be deployed in many configurations including air-gapped. The various configurations can be enabled using the profiles feature of docker compose.
 
 ### Basic Stack
+
 ```bash
 docker compose up -d
 ```
+
 Deploys core services: Elasticsearch cluster, Kibana, Fleet Server, and Elastic Agent.
 
 ### With Machine Learning
+
 ```bash
 docker compose --profile ml up -d
 ```
+
 Adds dedicated ML node for machine learning capabilities.
 
 ### With Monitoring
+
 ```bash
 docker compose --profile monitoring up -d
 ```
+
 Adds Metricbeat for comprehensive stack monitoring.
 
 ### With Log Ingestion
+
 ```bash
 docker compose --profile filebeat --profile logstash up -d
 ```
+
 Adds Filebeat and Logstash for advanced log processing.
 
 ### Air-Gapped Deployment
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml up -d
 ```
+
 Deploys with offline package and artifact registries.
 
 ### Multiple Profiles
+
 ```bash
 docker compose --profile ml --profile monitoring --profile frozen up -d
 ```
+
 Combines multiple optional services.
 
 **NOTE:** You can view the configuration that docker compose will apply prior to starting the project by using the `config` parameter instead of `up -d`.
 
 Examples:
+
 ```bash
 docker compose config
 ```
+
 or
+
 ```bash
 docker compose --profile monitoring config
 ```
 
 Multiple profiles can also be chained together. The following command enables Metricbeat, Logstash and an APM example:
+
 ```bash
 docker compose --profile monitoring --profile logstash --profile apm up -d
 ```
@@ -297,17 +333,21 @@ The `air-gapped.yml` configures the stack to utilize local Elastic Package Regis
 Using the air-gapped configuration requires chaining multiple docker-compose files due to configuration changes that need to be made to the base configuration. This is done using the `-f <filename>` flag when executing the `docker compose` command.
 
 ### Usage:
+
 To bring up the basic air-gapped stack (Elasticsearch, Kibana, Fleet/APM Server, EAR, and EPR):
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml up -d
 ```
 
 Profiles may also be used when using air-gapped. Using the same metricbeat example above, the command would be:
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring up -d
 ```
 
 Multiple profiles can also be chained together. The following command enables Metricbeat, Logstash and an APM example:
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring --profile logstash --profile apm up -d
 ```
@@ -323,22 +363,27 @@ The `elastic-maps-server.yml` configures the stack to utilize a self-hosted Elas
 Using the EMS configuration requires chaining multiple docker-compose files due to configuration changes that need to be made to the base configuration. This is done using the `-f <filename>` flag when executing the `docker compose` command.
 
 ### Usage:
+
 To bring up the basic Elastic Maps Service stack (Elasticsearch, Kibana, Fleet/APM Server, EMS):
+
 ```bash
 docker compose -f docker-compose.yml -f elastic-maps-server.yml up -d
 ```
 
 To bring up the basic air-gapped stack with Elastic Maps Service (Elasticsearch, Kibana, Fleet/APM Server, EAR, and EPR):
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml -f elastic-maps-server.yml up -d
 ```
 
 Profiles may also be used when using the Elastic Maps Service. Using the same metricbeat example above, the command would be:
+
 ```bash
 docker compose -f docker-compose.yml -f elastic-maps-server.yml --profile monitoring up -d
 ```
 
 Multiple profiles can also be chained together:
+
 ```bash
 docker compose -f docker-compose.yml -f elastic-maps-server.yml --profile monitoring --profile logstash up -d
 ```
@@ -346,18 +391,24 @@ docker compose -f docker-compose.yml -f elastic-maps-server.yml --profile monito
 ## Advanced Configurations
 
 ### Frozen Data Node with MinIO
+
 The frozen profile creates a cost-effective long-term storage solution:
+
 - **fz01**: Elasticsearch frozen data node
 - **minio**: S3-compatible object storage
 - **minio-setup**: Automated MinIO configuration
 
 ### Elastic Maps Service
+
 Provides geographic data visualization capabilities:
+
 - **ems-server**: Maps service with SSL/TLS
 - **mapsdata01**: Persistent maps data storage
 
 ### Container Monitoring
+
 The agent profile enables comprehensive container monitoring:
+
 - **container-agent**: Standalone Elastic Agent
 - **Syslog Support**: UDP (9003) and TCP (9004) ports
 - **Docker Integration**: Container log collection
@@ -365,16 +416,19 @@ The agent profile enables comprehensive container monitoring:
 ## Data Ingestion
 
 ### Filebeat Integration
+
 - **Source**: `./filebeat_ingest_data/` directory
 - **Configuration**: `./config/filebeat.yml`
 - **Features**: Docker container logs, custom log files
 
 ### Logstash Pipeline
+
 - **Source**: `./logstash_ingest_data/` directory
 - **Configuration**: `./config/logstash.conf`
 - **Processing**: Custom log parsing and transformation
 
 ### Agent Data Collection
+
 - **Source**: `./agent_ingest_data/` directory
 - **Integration**: Fleet Server policies
 - **Monitoring**: Real-time data collection
@@ -382,16 +436,19 @@ The agent profile enables comprehensive container monitoring:
 ## Security Features
 
 ### TLS/SSL Encryption
+
 - **Transport Layer**: Encrypted node-to-node communication
 - **HTTP Layer**: Encrypted client-to-cluster communication
 - **Certificate Management**: Automated CA and certificate generation
 
 ### X-Pack Security
+
 - **Authentication**: Username/password authentication
 - **Authorization**: Role-based access control
 - **Encryption**: Data encryption at rest and in transit
 
 ### Fleet Security
+
 - **Agent Enrollment**: Secure agent registration
 - **Policy Management**: Centralized security policies
 - **Certificate Distribution**: Automated certificate management
@@ -399,13 +456,16 @@ The agent profile enables comprehensive container monitoring:
 ## Monitoring and Health Checks
 
 ### Service Health Monitoring
+
 All services include comprehensive health checks:
+
 - **Elasticsearch**: Authentication endpoint verification
 - **Kibana**: API status monitoring
 - **Fleet Server**: Health endpoint validation
 - **Agents**: Fleet Server connectivity checks
 
 ### Stack Monitoring
+
 - **Metricbeat**: System and application metrics
 - **Kibana Monitoring**: Built-in stack monitoring
 - **Health Dashboards**: Service status visualization
@@ -415,6 +475,7 @@ All services include comprehensive health checks:
 ### Common Issues
 
 #### 1. Memory Issues
+
 ```bash
 # Check vm.max_map_count
 sysctl vm.max_map_count
@@ -424,6 +485,7 @@ sudo sysctl -w vm.max_map_count=262144
 ```
 
 #### 2. Certificate Issues
+
 ```bash
 # Remove existing certificates by removing the certs volume
 docker compose down -v
@@ -433,7 +495,9 @@ docker compose up -d
 **Note**: Certificates are stored in Docker volumes, not in local directories. To regenerate certificates, you must remove the volume containing the certificates and restart the stack.
 
 #### 3. Port Conflicts
+
 Check for port conflicts and update `.env` file:
+
 ```bash
 # Check port usage
 netstat -tulpn | grep :9200
@@ -441,6 +505,7 @@ netstat -tulpn | grep :5601
 ```
 
 ### Logs and Debugging
+
 ```bash
 # View service logs
 docker compose logs es01
@@ -452,6 +517,7 @@ docker compose logs -f es01
 ```
 
 ### Stopping and Managing the Stack
+
 ```bash
 # Stop all services
 docker compose down
@@ -476,11 +542,15 @@ To bring down the stack without purging the data volumes, execute the same comma
 ```bash
 docker compose down
 ```
+
 or
+
 ```bash
 docker compose --profile monitoring down
 ```
+
 or
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down
 ```
@@ -490,11 +560,15 @@ To bring down the stack and remove the data volumes, add `-v` to your command
 ```bash
 docker compose down -v
 ```
+
 or
+
 ```bash
 docker compose --profile monitoring down -v
 ```
+
 or
+
 ```bash
 docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down -v
 ```
@@ -502,7 +576,9 @@ docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down
 ## Performance Tuning
 
 ### Memory Configuration
+
 Adjust memory limits in `.env` file:
+
 ```bash
 ES_MEM_LIMIT=4g          # Elasticsearch memory
 KB_MEM_LIMIT=2g          # Kibana memory
@@ -512,6 +588,7 @@ FZ_MEM_LIMIT=2g          # Frozen node memory
 ```
 
 ### Cluster Scaling
+
 - **Horizontal Scaling**: Add more data nodes
 - **Vertical Scaling**: Increase memory limits
 - **Role Separation**: Dedicated nodes for specific functions
@@ -519,12 +596,15 @@ FZ_MEM_LIMIT=2g          # Frozen node memory
 ## Backup and Recovery
 
 ### Snapshot Configuration
+
 - **Repository**: MinIO S3-compatible storage
 - **Policy**: Automated snapshot scheduling
 - **Retention**: Configurable retention policies
 
 ### Data Persistence
+
 All data is stored in Docker volumes:
+
 - **esdata01/02/03**: Elasticsearch data
 - **kibanadata**: Kibana data
 - **fleetserverdata**: Fleet Server data
@@ -534,6 +614,7 @@ All data is stored in Docker volumes:
 ## Development and Testing
 
 ### Local Development
+
 ```bash
 # Start with minimal services
 docker compose up -d
@@ -543,6 +624,7 @@ docker compose --profile filebeat --profile logstash up -d
 ```
 
 ### Testing Profiles
+
 - **APM Testing**: `docker compose --profile apm up -d` for application monitoring
 - **Agent Testing**: `docker compose --profile agent up -d` for agent functionality
 - **ML Testing**: `docker compose --profile ml up -d` for machine learning features
@@ -551,7 +633,8 @@ docker compose --profile filebeat --profile logstash up -d
 ## Contributing
 
 ### Project Structure
-```
+
+```text
 ├── docker-compose.yml          # Main compose file
 ├── elastic-stack.yml           # Core service definitions
 ├── examples.yml                # Optional service profiles
@@ -563,6 +646,7 @@ docker compose --profile filebeat --profile logstash up -d
 ```
 
 ### Adding New Services
+
 1. Define service in appropriate compose file
 2. Add configuration files to `config/` directory
 3. Use Docker Compose profiles for optional services
@@ -602,11 +686,13 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#dock
 ## Support
 
 ### Documentation
+
 - [Elasticsearch Documentation](https://www.elastic.co/guide/index.html)
 - [Kibana User Guide](https://www.elastic.co/guide/en/kibana/current/index.html)
 - [Fleet Server Guide](https://www.elastic.co/guide/en/fleet/current/index.html)
 
 ### Community
+
 - [Elastic Community](https://discuss.elastic.co/)
 - [GitHub Issues](https://github.com/elastic/elasticsearch/issues)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/elasticsearch)
@@ -614,6 +700,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#dock
 ## Version Compatibility
 
 This project is tested with:
+
 - **Elastic Stack**: 8.x versions
 - **Docker**: 20.10+
 - **Docker Compose**: 2.20.3+
