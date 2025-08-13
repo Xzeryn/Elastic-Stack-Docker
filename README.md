@@ -166,8 +166,8 @@ Profiles are enabled to configure different services for demo/example purposes. 
 
 ## Prerequisites
 
-- **Docker**: Version 20.10 or higher
-- **Docker Compose**: Version `2.20.3` or greater
+- **Docker**: Version `24.10.6` or higher
+- **Docker Compose**: Version `2.22.0` or greater
 
 ### System Requirements
 
