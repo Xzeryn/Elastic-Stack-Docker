@@ -34,7 +34,14 @@ services:
       - xpack.security.http.ssl.certificate=certs/ml01/ml01.crt
       - xpack.security.transport.ssl.key=certs/ml01/ml01.key
       - xpack.security.transport.ssl.certificate=certs/ml01/ml01.crt
-    mem_limit: ${ML_MEM_LIMIT}
+    deploy:
+      resources:
+        limits:
+          cpus: ${ML_CPU_LIMIT}
+          memory: ${ML_MEM_LIMIT}
+        reservations:
+          cpus: ${ML_CPU_LIMIT}
+          memory: ${ML_MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
@@ -67,7 +74,14 @@ services:
       - xpack.security.transport.ssl.key=certs/fz01/fz01.key
       - xpack.security.transport.ssl.certificate=certs/fz01/fz01.crt
       - xpack.searchable.snapshot.shared_cache.size=${SNAPSHOT_SHARED_CACHE_SIZE}
-    mem_limit: ${FZ_MEM_LIMIT}
+    deploy:
+      resources:
+        limits:
+          cpus: ${FROZEN_CPU_LIMIT}
+          memory: ${FROZEN_MEM_LIMIT}
+        reservations:
+          cpus: ${FROZEN_CPU_LIMIT}
+          memory: ${FROZEN_MEM_LIMIT}
 
   # The minio service is used to store the frozen snapshots. It is configured to be a standalone service
   minio:
@@ -251,6 +265,14 @@ services:
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://es01:9200
+    deploy:
+      resources:
+        limits:
+          cpus: ${LOGSTASH_CPU_LIMIT}
+          memory: ${LOGSTASH_MEM_LIMIT}
+        reservations:
+          cpus: ${LOGSTASH_CPU_LIMIT}
+          memory: ${LOGSTASH_MEM_LIMIT}
     healthcheck:
       test:
         [
