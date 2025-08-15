@@ -145,7 +145,7 @@ Profiles are enabled to configure different services for demo/example purposes. 
 
 #### MCP Profile (`--profile mcp`)
 
-- **elastic-mcp-server**: Provides a MCP server configured as streamable-HTTP to communicate with the Elastic cluster
+- **mcp-server**: Provides a MCP server configured as streamable-HTTP to communicate with the Elastic cluster
 - **Implementation**: Implementation of the MCP Server can be followed on its [GitHub Repo](https://github.com/elastic/mcp-server-elasticsearch)
 - **Configuration**: The MCP configuration follows this [blog post](https://www.elastic.co/search-labs/blog/model-context-protocol-elasticsearch) you can use as a reference
 - **Endpoint**: MCP server endpoint is available at `http://localhost:8090/mcp`

@@ -337,9 +337,8 @@ services:
       - INTEGRATION_UDP_LOGS_VERSION=${INTEGRATION_UDP_LOGS_VERSION}
 
   # Tthe Elastic MCP Server allows LLM Clients to communicate with the Elastic cluster using streamable-HTTP protocol
-  elastic-mcp-server:
+  mcp-server:
     image: docker.elastic.co/mcp/elasticsearch:latest
-    container_name: elastic-mcp-server
     profiles:
       - mcp
     depends_on:
