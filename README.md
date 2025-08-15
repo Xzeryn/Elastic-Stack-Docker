@@ -166,8 +166,8 @@ Profiles are enabled to configure different services for demo/example purposes. 
 
 ## Prerequisites
 
-- **Docker**: Version 20.10 or higher
-- **Docker Compose**: Version `2.20.3` or greater
+- **Docker**: Version `24.10.6` or higher
+- **Docker Compose**: Version `2.22.0` or greater
 
 ### System Requirements
 
@@ -575,17 +575,39 @@ docker compose -f docker-compose.yml -f air-gapped.yml --profile monitoring down
 
 ## Performance Tuning
 
-### Memory Configuration
+### Resource Configuration
 
-Adjust memory limits in `.env` file:
+Adjust CPU and memory limits in `.env` file to optimize performance based on your host system capabilities:
 
+#### CPU Limits
 ```bash
-ES_MEM_LIMIT=4g          # Elasticsearch memory
-KB_MEM_LIMIT=2g          # Kibana memory
-FLEET_MEM_LIMIT=1g       # Fleet Server memory
-ML_MEM_LIMIT=4g          # ML node memory
-FZ_MEM_LIMIT=2g          # Frozen node memory
+ES_CPU_LIMIT=1            # Elasticsearch CPU cores (default: 1)
+FROZEN_CPU_LIMIT=1        # Frozen node CPU cores (default: 1)
+KB_CPU_LIMIT=0.5          # Kibana CPU cores (default: 0.5)
+LOGSTASH_CPU_LIMIT=0.25   # Logstash CPU cores (default: 0.25)
+ML_CPU_LIMIT=1            # ML node CPU cores (default: 1)
+FLEET_CPU_LIMIT=0.25      # Fleet Server CPU cores (default: 0.25)
 ```
+
+#### Memory Limits
+```bash
+ES_MEM_LIMIT=4G           # Elasticsearch memory (default: 4G)
+FROZEN_MEM_LIMIT=4G       # Frozen node memory (default: 4G)
+KB_MEM_LIMIT=2G           # Kibana memory (default: 3G)
+LOGSTASH_MEM_LIMIT=1G     # Logstash memory (default: 1G)
+ML_MEM_LIMIT=8G           # ML node memory (default: 8G)
+FLEET_MEM_LIMIT=1G        # Fleet Server memory (default: 2G)
+```
+
+#### Configuration Guidelines
+
+- **Elasticsearch**: Allocate at least 4GB RAM for production use. For larger datasets, consider 8GB+ RAM.
+- **ML Node**: Requires significant memory for machine learning operations. Default is 8GB, increase for complex models.
+- **Kibana**: 2-4GB RAM is typically sufficient for most use cases.
+- **Fleet Server**: 1-2GB RAM is adequate for agent management.
+- **CPU Allocation**: Use fractional values (e.g., 0.5 = half a core) for lightweight services.
+
+**Note**: After modifying these values, restart the stack with `docker compose up -d` for changes to take effect.
 
 ### Cluster Scaling
 

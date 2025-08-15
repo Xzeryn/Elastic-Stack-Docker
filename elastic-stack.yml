@@ -27,7 +27,14 @@ services:
       - APMSERVER_PORT=${APMSERVER_PORT}
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-    mem_limit: ${ES_MEM_LIMIT}
+    deploy:
+      resources:
+        limits:
+          cpus: ${ES_CPU_LIMIT}
+          memory: ${ES_MEM_LIMIT}
+        reservations:
+          cpus: ${ES_CPU_LIMIT}
+          memory: ${ES_MEM_LIMIT}
     ulimits:
       memlock:
         soft: -1
@@ -76,7 +83,14 @@ services:
       - DOCKER_HOST_IP=${DOCKER_HOST_IP}
       - APMSERVER_PORT=${APMSERVER_PORT}
       - INTEGRATION_FILESTREAM_VERSION=${INTEGRATION_FILESTREAM_VERSION}
-    mem_limit: ${KB_MEM_LIMIT}
+    deploy:
+      resources:
+        limits:
+          cpus: ${KB_CPU_LIMIT}
+          memory: ${KB_MEM_LIMIT}
+        reservations:
+          cpus: ${KB_CPU_LIMIT}
+          memory: ${KB_MEM_LIMIT}
     healthcheck:
       test:
         [
