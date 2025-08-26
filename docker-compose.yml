@@ -47,7 +47,7 @@ services:
       - xpack.security.transport.ssl.key=certs/es01/es01.key
       - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
       # Uncomment discovery.type=single-node for single node cluster and comment out discovery.seed_hosts and cluster.initial_master_nodes
-      #- discovery.type=single-node
+      # - discovery.type=single-node
       # Uncomment discovery.seed_hosts=es02,es03 and cluster.initial_master_nodes=es01,es02,es03 for multi node cluster and comment out discovery.type=single-node
       - discovery.seed_hosts=es02,es03
       - cluster.initial_master_nodes=es01,es02,es03
