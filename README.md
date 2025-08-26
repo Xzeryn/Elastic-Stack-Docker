@@ -151,7 +151,7 @@ Profiles are enabled to configure different services for demo/example purposes. 
 - **Endpoint**: MCP server endpoint is available at `http://localhost:8090/mcp`
 - **Use Case**: AI/ML model integration, LLM client communication
 
-#### Elastic Maps Profile
+### Elastic Maps Deployment
 
 - **ems-server**: Elastic Maps Service for geographic data visualization
 - **Use Case**: Geospatial data analysis, map visualizations, self-hosted maps in air-gapped environments
