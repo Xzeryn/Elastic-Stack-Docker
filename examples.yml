@@ -170,7 +170,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/metricbeat:${STACK_VERSION}
-    restart: always
+    restart: unless-stopped
     user: root
     volumes:
       - certs:/usr/share/metricbeat/certs
@@ -214,7 +214,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
-    restart: always
+    restart: unless-stopped
     user: root
     volumes:
       - certs:/usr/share/filebeat/certs
@@ -252,7 +252,7 @@ services:
       kibana:
         condition: service_healthy
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
-    restart: always
+    restart: unless-stopped
     labels:
       co.elastic.logs/module: logstash
     volumes:
@@ -291,7 +291,7 @@ services:
     image: webapp:${STACK_VERSION}
     build:
       context: app
-    restart: always
+    restart: unless-stopped
     volumes:
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"

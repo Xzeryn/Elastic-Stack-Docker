@@ -3,7 +3,7 @@ services:
   epr:
     image: docker.elastic.co/package-registry/distribution:${STACK_VERSION}
     container_name: epr
-    restart: always
+    restart: unless-stopped
     ports:
       - ${EPR_PORT}:8080
     healthcheck:
@@ -20,7 +20,7 @@ services:
       args:
         - ELASTIC_VERSION=${STACK_VERSION}
     container_name: ear
-    restart: always
+    restart: unless-stopped
     ports:
       - ${EAR_PORT}:9080
     healthcheck:

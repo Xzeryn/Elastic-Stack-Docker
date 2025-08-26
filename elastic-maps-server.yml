@@ -16,7 +16,7 @@ services:
       es01:
         condition: service_healthy                  
     image: docker.elastic.co/elastic-maps-service/elastic-maps-server:${STACK_VERSION}-amd64
-    restart: always
+    restart: unless-stopped
     #user: root
     hostname: ems-server
     ports:

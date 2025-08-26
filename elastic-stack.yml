@@ -1,7 +1,7 @@
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
-    restart: always
+    restart: unless-stopped
     labels:
       co.elastic.logs/module: elasticsearch
     volumes:
@@ -50,7 +50,7 @@ services:
   
   kibana:
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
-    restart: always
+    restart: unless-stopped
     labels:
       co.elastic.logs/module: kibana
     volumes:
@@ -104,7 +104,7 @@ services:
   elastic-agent:
     # image: docker.elastic.co/beats/elastic-agent:${STACK_VERSION}
     image: docker.elastic.co/elastic-agent/elastic-agent:${STACK_VERSION}
-    restart: always
+    restart: unless-stopped
     volumes:
       - certs:/certs
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
