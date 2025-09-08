@@ -124,9 +124,10 @@ services:
     entrypoint: >
       sh -c "
         sleep 5;
-        mc config host rm local;
-        mc config host add local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
-        mc mb local/${MINIO_BUCKET_NAME};
+        # mc config host rm local;
+        # mc config host add local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+        mc alias set es-s3 http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+        mc mb es-s3/${MINIO_BUCKET_NAME};
         echo '
         {
           \"Version\": \"2012-10-17\",
@@ -151,11 +152,11 @@ services:
             }
           ]
         }' > /tmp/elastic-bucket-policy.json;
-        mc admin policy create local elastic-s3 /tmp/elastic-bucket-policy.json;
-        mc policy set elastic-s3 local/${MINIO_BUCKET_NAME};
-        mc admin user add local ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
-        mc admin policy attach local elastic-s3 --user ${MINIO_ACCESS_KEY};
-        mc ls local;
+        mc admin policy create es-s3 elastic-s3 /tmp/elastic-bucket-policy.json;
+        # mc policy set elastic-s3 local/${MINIO_BUCKET_NAME};
+        mc admin user add es-s3 ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY};
+        mc admin policy attach es-s3 elastic-s3 --user ${MINIO_ACCESS_KEY};
+        mc ls es-s3;
         echo 'MinIO operations completed.';
         # while true; do sleep 30; done;
       "
