@@ -11,9 +11,9 @@ curl --cacert /usr/share/elasticsearch/config/certs/ca/ca.crt -u elastic:${ELAST
 -d '{
   "type": "s3",
   "settings": {
-    "client": "default",
     "bucket": "elastic",
-    "endpoint": "http://minio:9000"
+    "endpoint": "http://minio:9000",
+    "path_style_access": "true"
   }
 }'
 
