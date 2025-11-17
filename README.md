@@ -1,5 +1,10 @@
 # Elastic Stack Docker
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/Docker-24.10.6+-blue.svg?logo=docker)](https://www.docker.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker_Compose-2.22.0+-blue.svg?logo=docker)](https://docs.docker.com/compose/)
+[![Elastic](https://img.shields.io/badge/Elastic-9.2.1-orange.svg?logo=elastic)](https://www.elastic.co/docs/release-notes)
+
 A comprehensive Docker Compose project that provides a production-ready Elastic Stack (ELK Stack) deployment with multiple configuration options and advanced features.
 
 ## Overview
