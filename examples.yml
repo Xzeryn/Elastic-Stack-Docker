@@ -191,7 +191,7 @@ services:
       - KB_CERT=certs/kibana/kibana.crt
       - KB_KEY=certs/kibana/kibana.key
     command:
-      -strict.perms=false
+      --strict.perms=false
     healthcheck:
       test:
         [
@@ -230,7 +230,7 @@ services:
       - LOGSTASH_HOSTS=http://logstash01:9600
       - CA_CERT=certs/ca/ca.crt
     command:
-      -strict.perms=false
+      --strict.perms=false
     healthcheck:
       test:
         [
